@@ -99,6 +99,9 @@ $font:rgb(191, 203, 217);
       text-decoration: none;
       background-color: #001528;
     }
+    /deep/ .is-current .el-tree-node__label{
+      color:rgb(64, 158, 255);
+    }
   }
 }
 </style>
