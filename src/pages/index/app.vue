@@ -30,6 +30,8 @@ export default {
   created(){
     this.height = document.documentElement.clientHeight - 70 +"px"
     this.menuHeight = document.documentElement.clientHeight+"px"
+
+    this.$http.userGet({id:"root"})
   },
   methods:{
     test(){

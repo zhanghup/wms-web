@@ -1,14 +1,14 @@
 <template>
   <div class="login-container">
-    <el-form :model="form"  ref="form" class="login-form">
+    <el-form :model="form" :rules="rules"  ref="form" class="login-form">
       <div style=""><h1 style="display:inline-block;color:#eee;margin-bottom:40px;">系统登录</h1></div>
-        <el-form-item>
+        <el-form-item prop="account">
           <span class="iconfont">&#xeb01;</span>
-          <el-input type="text" v-model="form.account" auto-complete="off"></el-input>
+          <el-input type="text" v-model="form.account" auto-complete="off" placeholder="请输入用户名"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="password">
           <span class="iconfont">&#xe9a8;</span>
-          <el-input type="password" v-model="form.password" auto-complete="off"></el-input>
+          <el-input type="password" v-model="form.password" auto-complete="off" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-button type="primary" style="width:100%;" @click="submitForm()">登录</el-button>
     </el-form>
@@ -24,15 +24,26 @@ export default {
         form: {
           account: '',
           password: ''
+        },
+        rules: {
+          account: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+          ],
         }
       };
     },
-  watch: {
-    $route: {
-      
-    }
-  },
   created() {
+    let self = this;
+    document.onkeypress = function(e) {
+      var keycode = document.all ? event.keyCode : e.which;
+      if (keycode == 13) {
+          self.submitForm()
+         return false;
+      }
+    };
   },
   mounted() {
     
@@ -41,8 +52,19 @@ export default {
   },
   methods: {
      submitForm() {
-       location.href = "index.html"
-      },
+       this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.$http.login(this.form).then(r=>{
+              location.href = "index.html"
+              this.$http.SetToken(r)
+            })
+            
+          } else {
+            return false;
+          }
+        });
+       
+    },
   }
 }
 </script>
