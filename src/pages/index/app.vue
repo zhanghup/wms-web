@@ -10,58 +10,54 @@
         <input type="button" value="test" @click="test()">
       </header>
       <section class="right-block-body" :style="{height:height}">
-        <router-view />
+        <router-view style="height:100%"/>
       </section>
     </div>
   </div>
 </template>
 
 <script>
-import menuTree from "./components/menu/index"
+import menuTree from "./components/menu/index";
 export default {
-  name: 'App',
-  components:{ menuTree },
+  name: "App",
+  components: { menuTree },
   data() {
-      return {
-        height:"100px",
-        menuHeight:"100px"
-      };
+    return {
+      height: "100px",
+      menuHeight: "100px"
+    };
   },
-  created(){
-    this.height = document.documentElement.clientHeight - 70 +"px"
-    this.menuHeight = document.documentElement.clientHeight+"px"
-
-    this.$http.userGet({id:"root"})
+  created() {
+    this.height = document.documentElement.clientHeight - 90 + "px";
+    this.menuHeight = document.documentElement.clientHeight + "px";
   },
-  methods:{
-    test(){
-      this.$router.push("test")
-    }
-  }
-}
+  methods: {}
+};
 </script>
 
 <style lang="scss" scoped>
-.left-menu{
+.left-menu {
   width: 230px;
   float: left;
-  .left-menu-content{
-    width:230px;
+  .left-menu-content {
+    width: 230px;
   }
 }
-.right-block{
+.right-block {
   width: calc(100% - 210px);
-  position:absolute;
-  top:0px;
+  position: absolute;
+  top: 0px;
   left: 210px;
   background-color: #fff;
 
-  .right-block-header{
+  .right-block-header {
     height: 70px;
   }
-  .right-block-body{
-    height: calc(100% - 70px);
+  .right-block-body {
+    height: calc(100% - 90px);
     overflow: auto;
+    padding: 10px;
+    background-color: #f0f0f0;
   }
 }
 </style>

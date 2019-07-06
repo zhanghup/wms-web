@@ -1,78 +1,74 @@
 <template>
   <div class="login-container">
-    <el-form :model="form" :rules="rules"  ref="form" class="login-form">
-      <div style=""><h1 style="display:inline-block;color:#eee;margin-bottom:40px;">系统登录</h1></div>
-        <el-form-item prop="account">
-          <span class="iconfont">&#xeb01;</span>
-          <el-input type="text" v-model="form.account" auto-complete="off" placeholder="请输入用户名"></el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <span class="iconfont">&#xe9a8;</span>
-          <el-input type="password" v-model="form.password" auto-complete="off" placeholder="请输入密码"></el-input>
-        </el-form-item>
-        <el-button type="primary" style="width:100%;" @click="submitForm()">登录</el-button>
+    <el-form :model="form" :rules="rules" ref="form" class="login-form">
+      <div style>
+        <h1 style="display:inline-block;color:#eee;margin-bottom:40px;">系统登录</h1>
+      </div>
+      <el-form-item prop="account">
+        <span class="iconfont">&#xeb01;</span>
+        <el-input type="text" v-model="form.account" auto-complete="off" placeholder="请输入用户名"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <span class="iconfont">&#xe9a8;</span>
+        <el-input type="password" v-model="form.password" auto-complete="off" placeholder="请输入密码"></el-input>
+      </el-form-item>
+      <el-button type="primary" style="width:100%;" @click="submitForm()">登录</el-button>
     </el-form>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
-      return {
-        form: {
-          account: '',
-          password: ''
-        },
-        rules: {
-          account: [
-            { required: true, message: '请输入用户名', trigger: 'blur' },
-          ],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-          ],
-        }
-      };
-    },
+    return {
+      form: {
+        account: "",
+        password: ""
+      },
+      rules: {
+        account: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+      }
+    };
+  },
   created() {
     let self = this;
     document.onkeypress = function(e) {
       var keycode = document.all ? event.keyCode : e.which;
       if (keycode == 13) {
-          self.submitForm()
-         return false;
+        self.submitForm();
+        return false;
       }
     };
   },
-  mounted() {
-    
-  },
-  destroyed() {
-  },
+  mounted() {},
+  destroyed() {},
   methods: {
-     submitForm() {
-       this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.$http.login(this.form).then(r=>{
-              location.href = "index.html"
-              this.$http.SetToken(r)
-            })
-            
-          } else {
-            return false;
-          }
-        });
-       
-    },
+    submitForm() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.$http.login(this.form).then(r => {
+            let redirect = ap.Query("redirect")
+            if (redirect && redirect.length > 0){
+              location.href = redirect
+            }else{
+              location.href = "index.html";
+            }
+          });
+        } else {
+          return false;
+        }
+      });
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
-$dark_gray:#889aa4;
-$light_gray:#eee;
+$bg: #2d3a4b;
+$dark_gray: #889aa4;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
@@ -80,8 +76,8 @@ $light_gray:#eee;
   background-color: $bg;
   overflow: hidden;
 
-  .login-form{
-    text-align:center;
+  .login-form {
+    text-align: center;
     position: relative;
     width: 460px;
     max-width: 100%;
@@ -89,30 +85,28 @@ $light_gray:#eee;
     margin: 0 auto;
     overflow: hidden;
 
-    .el-form-item{
+    .el-form-item {
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(0, 0, 0, 0.1);
       border-radius: 5px;
-      
-      color:#eee;
-      span{
+
+      color: #eee;
+      span {
         font-size: 22px;
         position: relative;
-        top:1px;
+        top: 1px;
       }
-      .el-input{
+      .el-input {
         background: transparent;
         width: calc(100% - 40px);
-        /deep/ .el-input__inner{
+        /deep/ .el-input__inner {
           border: none;
-          color:#eee;
+          color: #eee;
           font-size: 18px;
           background: transparent;
         }
       }
     }
-    
   }
-  
 }
 </style>

@@ -1,25 +1,30 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+
+import {
+  Message
+} from 'element-ui'
 
 const BaseUrl = process.env.BASE_URL
 const urls = {
   'login': '/login',
-  'userCreate': '/user/create',
-  'userUpdate': '/user/update',
   'userGet': '/user/get',
-  'userDelete': '/user/delete'
+  'dictList': '/dict/list',
+  'dictItems': '/dictitem/list',
+
+  ...CUD('user', '/user'),
+  ...CUD('dict', '/dict'),
+  ...CUD('dictitem', '/dictitem')
 }
 
 let https = {}
 
-function CRUD(name,prefix){
+function CUD (name, prefix) {
   let obj = {}
-  obj[name+"Get"] = `/${prefix}/get`
-  obj[name+"Create"] = `/${prefix}/create`
-  obj[name+"Update"] = `/${prefix}/update`
-  obj[name+"Delete"] = `/${prefix}/delete`
+  obj[name + 'Create'] = `${prefix}/create`
+  obj[name + 'Update'] = `${prefix}/update`
+  obj[name + 'Delete'] = `${prefix}/delete`
   return obj
-}
+};
 
 (function () {
   axios.defaults.timeout = 5000
@@ -28,7 +33,7 @@ function CRUD(name,prefix){
   // http request 拦截器
   axios.interceptors.request.use(
     config => {
-    // const token = getCookie('名称');注意使用的时候需要引入cookie方法，推荐js-cookie
+      // const token = getCookie('名称');注意使用的时候需要引入cookie方法，推荐js-cookie
       config.data = JSON.stringify(config.data)
       config.headers = {
         'Content-Type': 'application/json'
@@ -64,7 +69,7 @@ function CRUD(name,prefix){
         }, err => {
           if (err.response.status === 401) {
             if (!exclude.includes(location.pathname)) {
-              location.href = '/login.html'
+              location.href = '/login.html?redirect=' + encodeURIComponent(location.href)
               return
             }
           }
