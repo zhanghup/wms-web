@@ -18,18 +18,30 @@
 
 <script>
 import menuTree from "./components/menu/index";
+import { setInterval } from 'timers';
 export default {
   name: "App",
   components: { menuTree },
   data() {
     return {
-      height: "100px",
-      menuHeight: "100px"
+      height: "1000px",
+      menuHeight: "1000px"
     };
   },
   created() {
-    this.height = document.documentElement.clientHeight - 90 + "px";
-    this.menuHeight = document.documentElement.clientHeight + "px";
+    let self = this;
+    self.height = document.documentElement.clientHeight - 90 + "px";
+    self.menuHeight = document.documentElement.clientHeight + "px";
+    setInterval(function(){
+      let height = document.documentElement.clientHeight - 90 + "px";
+      let menuHeight = document.documentElement.clientHeight + "px";
+      if (self.height != height){
+        self.height = height
+      }
+      if (self.menuHeight != menuHeight){
+        self.menuHeight = menuHeight
+      }
+    },20)
   },
   methods: {}
 };

@@ -4,65 +4,88 @@
           <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
         </div>
         <div class="content">
-          <el-tree class="filter-tree" :data="menuDatas" :props="defaultProps" default-expand-all :filter-node-method="filterNode" @node-click="router" ref="menuTree"></el-tree>
+          <el-menu :default-active="defaultActive" :router="true" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
+            <div  v-for="(p,i) in menus" :key="p.path">
+              <!-- 有子菜单 -->
+              <el-submenu v-if="p.children && p.children.length > 0" :index="i+''">
+                <template slot="title">
+                  <i class="el-icon-location"></i>
+                  <span>{{ p.name }}</span>
+                </template>
+                <div v-for="(c,ii) in p.children" :key="ii">
+                  <el-submenu v-if="c.children && c.children.length > 0" :index="p.path+'/'+c.path">
+                    <template slot="title">{{c.name}}</template>
+                  </el-submenu>
+                  <el-menu-item v-else  :index="p.path+'/'+c.path">
+                    <span slot="title">{{ c.name }}</span>
+                  </el-menu-item>
+                </div>
+              </el-submenu>
+
+              <!-- 没有子菜单 -->
+              <el-menu-item v-else :index="p.path">
+                <i class="el-icon-menu"></i>
+                <span slot="title">{{ p.name }}</span>
+              </el-menu-item>
+            </div>
+          </el-menu>
         </div>
     </div>
 </template>
 
 <script>
-import menu from '@/pages/index/router/modules/menus'
+import {menus,ms} from '@/pages/index/router/modules/menus'
+console.log(ms)
+import { setTimeout } from 'timers';
 
-  export default {
-    name:"menuTree",
-    watch: {
-      filterText(val) {
-        this.$refs.menuTree.filter(val);
-      }
-    },
-    data() {
-      return {
-        filterText: '',
-        menuDatas:[],
-        defaultProps: {
-          children: 'children',
-          label: 'name'
-        }
-      };
-    },
-    methods: {
-      filterNode(value, data) {
-        if (!value) return true;
-        return data.name.indexOf(value) !== -1;
-      },
-      router(a,b,c){
-        if (!b.isLeaf){
-          return
-        }
-        function PathFormat(node){
-          let path = node.data.path
-          if (path.lastIndexOf("/") == path.length - 1){
-            path = path.substr(0,path.length -1)
-          }
-          if (node.level == 1){
-            return path
-          }
-          return PathFormat(node.parent) + "/" + path
-        }
-        let path = PathFormat(b)
-        this.$router.push(path)
-      }
-    },
-    created(){
-      this.menuDatas = menu
+export default {
+  name:"menuTree",
+  
+  data() {
+    return {
+      defaultActive:'',
+      filterText: '',
+      menuDatas:[],
+      menus:[]
+    };
+  },
+
+  watch: {
+    filterText(v){
+      this.menus = this.filter(v,ms )
     }
-  };
+  },
+  methods: {
+    filter(f,datas){
+      if (f.length == 0){
+        return datas
+      }
+      let resu = []
+      for(let i = 0; i < datas.length; i++){
+        if (datas[i].name.indexOf(f) > -1){
+          resu.push(datas[i])
+        }
+      }
+      return resu
+    }
+  },
+  mounted(){
+    let self =this
+    setTimeout(function(){
+      self.defaultActive = self.$route.path
+    },300)
+  },
+  created(){
+    this.menuDatas = menus
+    this.menus = menus
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-$bg : rgb(48, 65, 86);
-$font:rgb(191, 203, 217);
+@import "../../../../assets/variables.scss";
 .wrap{
-  background-color: $bg;
+  background-color: $bgc;
 }
 .search{
   height: 40px;
@@ -82,26 +105,6 @@ $font:rgb(191, 203, 217);
 .content{
   height: calc(100% - 40px);
   overflow-y: auto;
-  .filter-tree{
-    background-color: $bg;
-    /deep/ .el-tree-node__label{
-      color:$font;
-    }
-    /deep/ .el-tree-node__content{
-      cursor: pointer;
-      color: inherit;
-      text-decoration: none;
-      background-color: transparent;
-    }
-    /deep/ .el-tree-node__content:hover{
-      cursor: pointer;
-      color: inherit;
-      text-decoration: none;
-      background-color: #001528;
-    }
-    /deep/ .is-current .el-tree-node__label{
-      color:rgb(64, 158, 255);
-    }
-  }
+  padding-right: 18px;
 }
 </style>
