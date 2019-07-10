@@ -19,9 +19,7 @@
             }
           -->
           <el-card v-if="expand && expand.type == 'array'" class="box-card">
-            <div slot="header" class="clearfix">
-              <span>{{expand.title}}</span>
-            </div>
+            <div slot="header" class="clearfix"><span>{{expand.title}}</span></div>
             <el-table :show-header="false" :data="props.row[expand.key]" border style="width: 100%">
               <el-table-column type="index" width="50"/>
               <el-table-column v-for="item in ExpandColumns" :key="item.key" :prop="item.key" :label="item.title" :width="item.width" />

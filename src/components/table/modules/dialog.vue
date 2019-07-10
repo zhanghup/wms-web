@@ -107,10 +107,7 @@ export default {
           ext[k] = this.extends[col.substr(1)]
         }
       }
-      add(this.column.action)(
-        
-        dialogTypeFormat(this.column.cols, this.inputValue,ext)
-      ).then(r => {
+      add(this.column.action)(dialogTypeFormat(this.column.cols, this.inputValue,ext)).then(r => {
         this.dialogVisible = false;
         if (this.dialogAdd) {
           this.dialogAdd(r);
@@ -125,9 +122,7 @@ export default {
           ext[k] = this.extends[col.substr(1)]
         }
       }
-      edit(this.column.action)(
-        dialogTypeFormat(this.column.cols, this.inputValue,ext)
-      ).then(r => {
+      edit(this.column.action)(dialogTypeFormat(this.column.cols, this.inputValue,ext)).then(r => {
         this.dialogVisible = false;
         if (this.dialogEdit) {
           this.dialogEdit(r);
