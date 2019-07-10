@@ -13,6 +13,21 @@ import http from '@/actions/ajax.js'
 export const columns = columns => {
   return columns
 }
+/*
+  drule说明：
+
+  dtype说明：
+  |- 类型(dtype)     组件            解析列表(ditems)                 内置类型(dkind)
+  |- string       el-input          -
+  |- number       el-input          -
+  |- radio        el-radio-group    [{name:'',value:''}]
+  |- checkbox     el-checkbox-group [{name:'',value:''}]
+  |- select       el-select         [{name:'',value:''}]
+  |- switch       el-switch         -
+  |- slider       el-slider         -
+  |- date         el-date-picker    [{text:'',onClick(picker){}}]    year/month/date(默认)/dates/week/datetime/datetimerange/daterange/monthrange
+
+*/
 export const dialog = columns => {
   return columns
 }
