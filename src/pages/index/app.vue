@@ -7,7 +7,12 @@
     </div>
     <div class="right-block">
       <header class="right-block-header">
-        <input type="button" value="test" @click="test()">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+          <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+          <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+        </el-breadcrumb>
       </header>
       <section class="right-block-body" :style="{height:height}">
         <router-view style="height:100%"/>
@@ -63,7 +68,8 @@ export default {
   background-color: #fff;
 
   .right-block-header {
-    height: 70px;
+    padding: 10px;
+    height: 50px;
   }
   .right-block-body {
     height: calc(100% - 90px);

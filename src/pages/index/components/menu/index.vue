@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <div class="search">
-          <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+          <el-input placeholder="输入菜单名称进行过滤" v-model="filterText"></el-input>
         </div>
         <div class="content">
           <el-menu :default-active="defaultActive" :router="true" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
@@ -35,7 +35,7 @@
 
 <script>
 import {menus,ms} from '@/pages/index/router/modules/menus'
-console.log(ms)
+
 import { setTimeout } from 'timers';
 
 export default {
@@ -58,7 +58,7 @@ export default {
   methods: {
     filter(f,datas){
       if (f.length == 0){
-        return datas
+        return menus
       }
       let resu = []
       for(let i = 0; i < datas.length; i++){

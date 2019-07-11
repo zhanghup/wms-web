@@ -23,17 +23,15 @@ export const menus = [
 
 let unmenus = []
 function unwind (m) {
-  debugger
   for (let i = 0; i < m.length; i++) {
     let obj = JSON.parse(JSON.stringify(m[i]))
-    if (obj.key) {
-      if (obj.children && obj.children.length > 0) {
-        unwind(obj.children)
-      }
-      delete obj.children
-      unmenus.push(obj)
+    if (obj.children && obj.children.length > 0) {
+      unwind(obj.children)
     }
+    delete obj.children
+    unmenus.push(obj)
   }
-}(menus)
+  return unmenus
+}
 
-export const ms = unmenus
+export const ms = unwind(menus)
