@@ -7,15 +7,21 @@
     </div>
     <div class="right-block">
       <header class="right-block-header">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-          <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-          <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-        </el-breadcrumb>
+        <div class="head">
+          <div style="flex-grow:1">
+            没什么东东
+          </div>
+          <div style="">
+            <el-avatar shape="square"  fit="cover" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"></el-avatar>
+          </div>
+        </div>
+        <div class="his-menu">
+          dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+        </div>
       </header>
       <section class="right-block-body" :style="{height:height}">
         <router-view style="height:100%"/>
+        <el-backtop target=".right-block-body"></el-backtop>
       </section>
     </div>
   </div>
@@ -65,17 +71,32 @@ export default {
   position: absolute;
   top: 0px;
   left: 210px;
-  background-color: #fff;
+  background-color: #f0f0f0;
+  
 
   .right-block-header {
-    padding: 10px;
-    height: 50px;
+    height: 70px;
+    .head{
+      padding:2px 10px;
+      display:flex;
+      align-items:center;
+      background-color: #fff;
+    }
+    .his-menu{
+      background-color: #fff;
+      white-space: nowrap;
+      border-bottom: 1px solid #d8dce5;
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,.12), 0 0 3px 0 rgba(0,0,0,.04);
+      position:absolute;
+      width:100%;
+      overflow-x: auto;
+    }
+    
   }
   .right-block-body {
     height: calc(100% - 90px);
     overflow: auto;
     padding: 10px;
-    background-color: #f0f0f0;
   }
 }
 </style>

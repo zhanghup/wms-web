@@ -1,4 +1,7 @@
+import http from './ajax'
+
 const ap = {
+  $http: http,
   Query (name) {
     const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
     const urlObj = window.location
