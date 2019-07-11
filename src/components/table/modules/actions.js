@@ -29,14 +29,14 @@ export const columns = columns => {
   |- bool     只判断该字段的内容是否存在
   |- string   以正则表达式去校验改字段
   |- Object   普通的一条验证对象,例如{ required: true,message:"该字段必填" }
-  |- Array    包含上面所说的所有验证方式，可以混用，例如[true,/`a?z$/,{ required: true,message:"该字段必填" }]
+  |- Array    包含上面所说的所有验证方式，可以混用，例如[true,/^-?\d*\.?\d+$/,{ required: true,message:"该字段必填" }]
   |- {
     required: "是否必填，类型（bool）",
     message: "提示语，类型（string）",
     pattern: "正则校验"
   }
 
-  内置验证：
+  dtype(string)内置验证：
   |- account: 用户名正则，4到16位（字母，数字，下划线，减号）
   |- password: 密码强度正则，最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符
   |- number: 数字正则，正数、负数、小数

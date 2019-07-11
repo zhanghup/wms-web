@@ -1,103 +1,16 @@
 <template>
   <div id="app">
-    <div class="left-menu">
-      <div class="left-menu-content">
-        <menu-tree :style="{height:menuHeight,overflow:'auto'}"></menu-tree>
-      </div>
-    </div>
-    <div class="right-block">
-      <header class="right-block-header">
-        <div class="head">
-          <div style="flex-grow:1">
-            没什么东东
-          </div>
-          <div style="">
-            <el-avatar shape="square"  fit="cover" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"></el-avatar>
-          </div>
-        </div>
-        <div class="his-menu">
-          dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
-        </div>
-      </header>
-      <section class="right-block-body" :style="{height:height}">
-        <router-view style="height:100%"/>
-        <el-backtop target=".right-block-body"></el-backtop>
-      </section>
-    </div>
+    <layout/>
   </div>
 </template>
 
 <script>
-import menuTree from "./components/menu/index";
+import layout from "./components/layout/index";
 import { setInterval } from 'timers';
 export default {
   name: "App",
-  components: { menuTree },
-  data() {
-    return {
-      height: "1000px",
-      menuHeight: "1000px"
-    };
-  },
-  created() {
-    let self = this;
-    self.height = document.documentElement.clientHeight - 90 + "px";
-    self.menuHeight = document.documentElement.clientHeight + "px";
-    setInterval(function(){
-      let height = document.documentElement.clientHeight - 90 + "px";
-      let menuHeight = document.documentElement.clientHeight + "px";
-      if (self.height != height){
-        self.height = height
-      }
-      if (self.menuHeight != menuHeight){
-        self.menuHeight = menuHeight
-      }
-    },20)
-  },
-  methods: {}
+  components:{layout}
 };
 </script>
 
-<style lang="scss" scoped>
-.left-menu {
-  width: 230px;
-  float: left;
-  .left-menu-content {
-    width: 230px;
-  }
-}
-.right-block {
-  width: calc(100% - 210px);
-  position: absolute;
-  top: 0px;
-  left: 210px;
-  background-color: #f0f0f0;
-  
-
-  .right-block-header {
-    height: 70px;
-    .head{
-      padding:2px 10px;
-      display:flex;
-      align-items:center;
-      background-color: #fff;
-    }
-    .his-menu{
-      background-color: #fff;
-      white-space: nowrap;
-      border-bottom: 1px solid #d8dce5;
-      box-shadow: 0 1px 3px 0 rgba(0,0,0,.12), 0 0 3px 0 rgba(0,0,0,.04);
-      position:absolute;
-      width:100%;
-      overflow-x: auto;
-    }
-    
-  }
-  .right-block-body {
-    height: calc(100% - 90px);
-    overflow: auto;
-    padding: 10px;
-  }
-}
-</style>
 

@@ -1,10 +1,14 @@
 <template>
     <div class="wrap">
         <div class="search">
-          <el-input placeholder="输入菜单名称进行过滤" v-model="filterText"></el-input>
+          <el-input v-show="!collapse" placeholder="输入菜单名称进行过滤" v-model="filterText"></el-input>
+          <div @click="collapse = !collapse">
+            <i v-show="!collapse" class="el-icon-s-fold"></i>
+            <i v-show="collapse" class="el-icon-s-unfold"></i>
+          </div>
         </div>
         <div class="content">
-          <el-menu :default-active="defaultActive" :router="true" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
+          <el-menu :collapse="collapse" :default-active="defaultActive" :router="true" background-color="#304156" text-color="#fff" active-text-color="#409EFF">
             <div  v-for="(p,i) in menus" :key="p.path">
               <!-- 有子菜单 -->
               <el-submenu v-if="p.children && p.children.length > 0" :index="i+''">
@@ -29,6 +33,7 @@
               </el-menu-item>
             </div>
           </el-menu>
+          <div class="mask"></div>
         </div>
     </div>
 </template>
@@ -39,10 +44,11 @@ import {menus,ms} from '@/pages/index/router/modules/menus'
 import { setTimeout } from 'timers';
 
 export default {
-  name:"menuTree",
+  name:"zmenu",
   
   data() {
     return {
+      collapse:false,
       defaultActive:'',
       filterText: '',
       menuDatas:[],
@@ -83,22 +89,32 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../../../assets/variables.scss";
+@import "../../../../../assets/variables.scss";
 .wrap{
   background-color: $bgc;
 }
 .search{
   height: 40px;
+  display: flex;
 
   .el-input{
+    padding: 0px;
+    border-radius: 0px;
     background: transparent;
-    width: calc(100%);
     /deep/ .el-input__inner{
       border: none;
       color:#eee;
       font-size: 14px;
       background: rgba(0, 0, 0, 0.1);
       width: 100%;
+      border-radius: 0px;
+    }
+  }
+  div{
+    padding: 8px;
+    i{
+      font-size: 24px;
+      color: #fff;
     }
   }
 }
@@ -106,5 +122,14 @@ export default {
   height: calc(100% - 40px);
   overflow-y: auto;
   padding-right: 18px;
+  position: relative;
+  .mask{
+    background-color: $bgc;
+    position: absolute;
+    right: 0px;
+    width: 19px;
+    height: 100%;
+    top: 0px;
+  }
 }
 </style>
