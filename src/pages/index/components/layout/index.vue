@@ -1,10 +1,10 @@
 <template>
   <div style="display:flex;flex-direction:column;" :style="{height}">
     <div>
-      <zhead/>
+      <z-head/>
     </div>
     <div class="body">
-      <zmenu/>
+      <z-menu/>
       <section class="section-content">
         <router-view class="router-view" style="height:100%"/>
       </section>
@@ -14,13 +14,13 @@
 </template>
 
 <script>
-import zmenu from "./modules/menus";
-import zhead from "./modules/zhead";
+import zMenu from "./modules/menus";
+import zHead from "./modules/zhead";
 import { setInterval } from 'timers';
 
 export default {
   name: 'layout',
-  components: { zmenu,zhead },
+  components: { zMenu,zHead },
   data() {
     return {
       height: "1000px",

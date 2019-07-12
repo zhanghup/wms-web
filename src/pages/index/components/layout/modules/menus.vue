@@ -17,7 +17,7 @@
                   <span v-show="!collapse">{{ p.name }}</span>
                 </template>
                 <div v-for="(c,ii) in p.children" :key="ii">
-                  <el-submenu v-if="c.children && c.children.length > 0" :index="p.path+'/'+c.path">
+                  <el-submenu v-if="c.children && c.children.length > 0" :index="menuMap[p.key]">
                     <template slot="title">{{c.name}}</template>
                   </el-submenu>
                   <el-menu-item v-else  :index="p.path+'/'+c.path">
@@ -27,7 +27,7 @@
               </el-submenu>
 
               <!-- 没有子菜单 -->
-              <el-menu-item v-else :index="p.path">
+              <el-menu-item v-else :index="menuMap[p.key]">
                 <i class="el-icon-menu"></i>
                 <span slot="title">{{ p.name }}</span>
               </el-menu-item>
@@ -51,21 +51,45 @@ export default {
       defaultActive:'',
       filterText: '',
       menuDatas:[],
-      menus:[]
+      menus:[],
+      menuMap:{},
     };
   },
 
   watch: {
     filterText(v){
-      this.menus = this.filter(v,ms )
+      this.menus = this.filter(v,ms)
+      
     }
   },
   methods: {
+    index(datas,prefix){
+      if (!prefix || prefix.length == 0){
+        prefix = ""
+      }
+      for(let i = 0; i < datas.length; i++){
+        let url = ""
+        if (datas[i].path.indexOf("/") === 0){
+          url = datas[i].path
+        }else{
+          url = "/" + datas[i].path
+        }
+        if(datas[i].key){
+          this.menuMap[datas[i].key] = prefix + url
+        }
+
+        if (datas[i].children && datas[i].children.length > 0){
+          this.index(datas[i].children,url)
+        }
+      }
+    },
     filter(f,datas){
+      let resu = []
+
       if (f.length == 0){
         return menus
       }
-      let resu = []
+      
       for(let i = 0; i < datas.length; i++){
         if (datas[i].name.indexOf(f) > -1){
           resu.push(datas[i])
@@ -83,6 +107,7 @@ export default {
   created(){
     this.menuDatas = menus
     this.menus = menus
+    this.index(menus)
   }
 };
 </script>
