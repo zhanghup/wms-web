@@ -1,12 +1,12 @@
 <template>
   <div style="display:flex;flex-direction:column;" :style="{height}">
-    <header class="header">
-      <zheader/>
-    </header>
+    <div>
+      <zhead/>
+    </div>
     <div class="body">
       <zmenu/>
-      <section class="section-content" style="">
-        <router-view/>
+      <section class="section-content">
+        <router-view class="router-view" style="height:100%"/>
       </section>
     </div>
     <el-backtop target=".section-content"></el-backtop>
@@ -15,12 +15,12 @@
 
 <script>
 import zmenu from "./modules/menus";
-import zheader from "./modules/zhead";
+import zhead from "./modules/zhead";
 import { setInterval } from 'timers';
 
 export default {
   name: 'layout',
-  components: { zmenu,zheader },
+  components: { zmenu,zhead },
   data() {
     return {
       height: "1000px",
@@ -49,30 +49,13 @@ export default {
     background-color: #f0f0f0;
     flex-grow:1;
     overflow-y:auto;
-    height:100%;
+    height:calc(100% - 10px);
+    padding:5px;
   }
 }
 
-// .left-menu {
-//   width: 230px;
-//   float: left;
-//   .left-menu-content {
-//     width: 230px;
-//   }
-// }
-// .right-block {
-//   width: calc(100% - 210px);
-//   position: absolute;
-//   top: 0px;
-//   left: 210px;
-//   background-color: #f0f0f0;
-  
+/deep/ .router-view > div{
+  height:100%;
+}
 
-  
-//   .right-block-body {
-//     height: calc(100% - 90px);
-//     overflow: auto;
-//     padding: 10px;
-//   }
-// }
 </style>

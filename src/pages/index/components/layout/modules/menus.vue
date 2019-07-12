@@ -2,7 +2,7 @@
     <div class="wrap">
         <div class="search">
           <el-input v-show="!collapse" placeholder="输入菜单名称进行过滤" v-model="filterText"></el-input>
-          <div @click="collapse = !collapse">
+          <div @click="collapse = !collapse" style="cursor:pointer;">
             <i v-show="!collapse" class="el-icon-s-fold"></i>
             <i v-show="collapse" class="el-icon-s-unfold"></i>
           </div>
@@ -14,7 +14,7 @@
               <el-submenu v-if="p.children && p.children.length > 0" :index="i+''">
                 <template slot="title">
                   <i class="el-icon-location"></i>
-                  <span>{{ p.name }}</span>
+                  <span v-show="!collapse">{{ p.name }}</span>
                 </template>
                 <div v-for="(c,ii) in p.children" :key="ii">
                   <el-submenu v-if="c.children && c.children.length > 0" :index="p.path+'/'+c.path">
@@ -33,7 +33,6 @@
               </el-menu-item>
             </div>
           </el-menu>
-          <div class="mask"></div>
         </div>
     </div>
 </template>
@@ -92,10 +91,12 @@ export default {
 @import "../../../../../assets/variables.scss";
 .wrap{
   background-color: $bgc;
+  display: flex;
+  flex-direction: column;
 }
 .search{
-  height: 40px;
   display: flex;
+  justify-content: center;
 
   .el-input{
     padding: 0px;
@@ -119,17 +120,17 @@ export default {
   }
 }
 .content{
-  height: calc(100% - 40px);
+  flex-grow: 1;
   overflow-y: auto;
-  padding-right: 18px;
   position: relative;
-  .mask{
-    background-color: $bgc;
-    position: absolute;
-    right: 0px;
-    width: 19px;
-    height: 100%;
-    top: 0px;
-  }
+  .el-menu{
+    border: none;
+  }  
 }
+
+// 滚动条样式
+::-webkit-scrollbar {/*滚动条整体样式*/
+  width: 0px;    
+}
+
 </style>
