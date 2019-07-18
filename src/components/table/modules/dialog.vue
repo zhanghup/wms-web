@@ -4,10 +4,10 @@
 
     <div v-if="dialogVisible">
       <el-dialog title="提示" :visible.sync="dialogVisible" width="360">
-        <el-form label-position="right" ref="form" label-width="80px" :rules="Rules" :model="inputValue" >
+        <el-form label-position="right" ref="form" label-width="80px" :rules="Rules" :model="model" >
           <el-form-item v-for="item in Columns" :key="item.key" :label="item.title" :prop="item.key">
-            <el-input v-if="item.dtype == 'string'" size="small" v-model="inputValue[item.key]"></el-input>
-            <el-input v-if="item.dtype == 'number'" type="number" size="small" v-model="inputValue[item.key]" ></el-input>
+            <el-input v-if="item.dtype == 'string'" size="small" v-model="model[item.key]"></el-input>
+            <el-input v-if="item.dtype == 'number'" type="number" size="small" v-model="model[item.key]" ></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -43,7 +43,8 @@ export default {
   },
   data() {
     return {
-      dialogVisible: false
+      dialogVisible: false,
+      model:{},
     };
   },
   model: {
@@ -60,6 +61,11 @@ export default {
   },
   methods: {
     btn_click(){
+      if(this.actionType == "add"){
+        this.model = {}
+      }else{
+        this.model = {...this.inputValue}
+      }
       if (this.onclick){
         this.onclick()
       }
@@ -70,6 +76,7 @@ export default {
         if (!valid) {
           return;
         }
+        this.$emit("inputEvent",this.model)
         if (this.actionType == "add") {
           this.add();
         } else if (this.actionType == "edit") {
@@ -87,7 +94,7 @@ export default {
       }
       add(this.column.action)(
         
-        dialogTypeFormat(this.column.cols, this.inputValue,ext)
+        dialogTypeFormat(this.column.cols, this.model,ext)
       ).then(r => {
         this.dialogVisible = false;
         if (this.dialogAdd) {
@@ -104,7 +111,7 @@ export default {
         }
       }
       edit(this.column.action)(
-        dialogTypeFormat(this.column.cols, this.inputValue,ext)
+        dialogTypeFormat(this.column.cols, this.model,ext)
       ).then(r => {
         this.dialogVisible = false;
         if (this.dialogEdit) {

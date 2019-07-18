@@ -12,9 +12,9 @@ export default {
       column: {
         action:'dict',
         cols:[
-          { title: "字典编码", key: "id", dtype: "string" },
-          { title: "名称", key: "name", dtype: "string", drule: true },
-          { title: "排序", key: "weight", dtype: "number", drule: true }
+          { title: "字典编码", key: "id", dtype: "string", drule: true, filter:'string' },
+          { title: "名称", key: "name", dtype: "string", drule: true, filter:'string' },
+          { title: "排序", key: "weight", dtype: "number", drule: true, filter:'number' }
         ]
       },
       expand: {
@@ -25,7 +25,8 @@ export default {
         extends:{code:"$id"},
         cols: [
           { title: "名称", key: "name", dtype:'string',drule:true }, 
-          { title: "值", key: "value", dtype:'string',drule:true}
+          { title: "值", key: "value", dtype:'string',drule:true},
+          { title: "排序", key: "weight", dtype: "number", drule: true }
         ]
       }
     };

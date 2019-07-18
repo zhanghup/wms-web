@@ -7,7 +7,7 @@
     </z-filter>
     <el-table id="table" :height="tableHeight" :data="Datas" :highlight-current-row="true" style="width: 100%">
       <el-table-column v-if="expand" type="expand">
-        <template slot-scope="props" style="background-color:#fbfbfb;">
+        <template slot-scope="props" style="background-color:#fbfbfb;" v-if="props.row[expand.key] && props.row[expand.key].length > 0">
           <!--
             expand:{
               type:'array',
@@ -25,6 +25,12 @@
             <el-table :show-header="false" :data="props.row[expand.key]" border style="width: 100%">
               <el-table-column type="index" width="50"/>
               <el-table-column v-for="item in ExpandColumns" :key="item.key" :prop="item.key" :label="item.title" :width="item.width" />
+              <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                  <z-dialog type="primary" v-model="scope.row" :column="expand" actionType="edit" label="编辑" />
+                  <el-button size="mini" type="danger" @click="_expandDel(scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </el-card>
         </template>
@@ -57,7 +63,6 @@ export default {
     return {
       tableHeight: 0,
       timer: {},
-      dialogModel: {},
       addedData: [],
       datas: [],
       query: {
@@ -110,6 +115,24 @@ export default {
         type: "warning"
       }).then(() => {
         del(this.column.action)({ id: r.id }).then(r => {
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+          this.loadData();
+        });
+      });
+    },
+    _expandAdd(r){
+      this.loadData();
+    },
+    _expandDel(r){
+      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        del(this.expand.action)({ id: r.id }).then(r => {
           this.$message({
             type: "success",
             message: "删除成功!"
