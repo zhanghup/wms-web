@@ -19,9 +19,7 @@
             }
           -->
           <el-card v-if="expand && expand.type == 'array'" class="box-card">
-            <div slot="header" class="clearfix">
-              <span>{{expand.title}}</span>
-            </div>
+            <div slot="header" class="clearfix"><span>{{expand.title}}</span></div>
             <el-table :show-header="false" :data="props.row[expand.key]" border style="width: 100%">
               <el-table-column type="index" width="50"/>
               <el-table-column v-for="item in ExpandColumns" :key="item.key" :prop="item.key" :label="item.title" :width="item.width" />
@@ -39,12 +37,20 @@
       <el-table-column v-for="item in Columns" :key="item.key" :label="item.title" :prop="item.key"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <z-dialog :column="expand" :extends="scope.row" type="primary" />
+          <z-dialog v-if="expand" :column="expand" :extends="scope.row" type="primary" />
           <z-dialog type="primary" v-model="scope.row" :column="column" actionType="edit" label="编辑" />
           <el-button size="mini" type="danger" @click="_rowDel(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination v-if="page"
+      @size-change="changeSize"
+      @current-change="changePage"
+      :current-page="query.page.index"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="query.page.size"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total" style="text-align:right;background-color:#fff;" />
   </div>
 </template>
 <script>
@@ -55,9 +61,10 @@ export default {
   name: "z-table",
   components: { zFilter, zDialog },
   props: {
+    list:Array,
     page: { type: Boolean, default: true },
     column: { type: Object, required: true },
-    expand: Object // {type: 'array',key:'values',columns:[{title:"",key:""}]}
+    expand: Object
   },
   data() {
     return {
@@ -65,8 +72,9 @@ export default {
       timer: {},
       addedData: [],
       datas: [],
+      total:0,
       query: {
-        page: {},
+        page: {index:1,size:100},
         param: {}
       }
     };
@@ -89,12 +97,26 @@ export default {
       this.addedData = [];
       this.loadData();
     },
+    changePage(i){
+      this.query.page.index = i
+      this.loadData()
+    },
+    changeSize(i){
+      this.query.page.size = i
+      this.loadData()
+    },
     loadData() {
       let param;
       if (this.page) {
         param = { ...this.query.page, ...this.query.param };
       } else {
         param = { ...this.query.param };
+      }
+      if (!this.column.action){
+        if (this.list && this.list.length > 0){
+          this.datas = this.list
+        }
+        return
       }
       list(this.column.action)(param).then(r => {
         if (this.page) {

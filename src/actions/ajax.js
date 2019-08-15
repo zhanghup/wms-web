@@ -1,9 +1,8 @@
 import axios from 'axios'
 
-import {
-  Message
-} from 'element-ui'
+import { Message } from 'element-ui'
 
+const exclude = ['/login.html']
 const BaseUrl = process.env.BASE_URL
 const urls = {
   'login': '/login',
@@ -11,15 +10,14 @@ const urls = {
   'dictList': '/dict/list',
   'dictItems': '/dictitem/list',
 
-  ...CUD('user', '/user'),
-  ...CUD('dict', '/dict'),
-  ...CUD('dictitem', '/dictitem')
+  ...CRUD('user', '/user'),
+  ...CRUD('dict', '/dict'),
+  ...CRUD('dictitem', '/dictitem')
 }
 
-let https = {}
-
-function CUD (name, prefix) {
+function CRUD (name, prefix) {
   let obj = {}
+  obj[name + 'List'] = `${prefix}/list`
   obj[name + 'Create'] = `${prefix}/create`
   obj[name + 'Update'] = `${prefix}/update`
   obj[name + 'Delete'] = `${prefix}/delete`
@@ -53,13 +51,13 @@ function CUD (name, prefix) {
       return Promise.reject(error)
     }
   )
+})()
 
-  const exclude = ['/login.html']
-
-  function post (url, data = {}) {
-    return new Promise((resolve, reject) => {
-      axios.post(url, data)
-        .then(response => {
+class Http {
+  constructor () {
+    function post (url, data = {}) {
+      return new Promise((resolve, reject) => {
+        axios.post(url, data).then(response => {
           if (response.data.code === 0) {
             resolve(response.data.data)
           } else {
@@ -75,18 +73,19 @@ function CUD (name, prefix) {
           }
           reject(err)
         })
-    })
-  }
+      })
+    }
 
-  function action (url) {
-    return function (param) {
-      return post(url, param)
+    function action (url) {
+      return function (param) {
+        return post(url, param)
+      }
+    }
+
+    for (let k in urls) {
+      this[k] = action(urls[k])
     }
   }
+}
 
-  for (let k in urls) {
-    https[k] = action(urls[k])
-  }
-})()
-
-export default https
+export default new Http()
