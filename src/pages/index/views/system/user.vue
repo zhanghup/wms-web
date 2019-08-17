@@ -1,8 +1,6 @@
 <template>
   <div class="login-container">
-   <div v-for="i in test">
-     <div>用户管理{{i}}</div>
-   </div>
+    <z-table :column="column" />
   </div>
 </template>
 
@@ -11,19 +9,20 @@
 export default {
   name: 'user',
   data() {
-      return {
-        test:[]
-      };
-    },
-  watch: {
-    $route: {
-      
-    }
+    return {
+      column: {
+        action:'user',
+        cols:[
+          { title: "用户类型", key: "type", dtype: "string", drule: true },
+          { title: "账户", key: "account", dtype: "string", drule: true },
+          { title: "名称", key: "name", dtype: "string", drule: true},
+          { title: "密码", key: "password", dtype: "password", drule: true},
+        ]
+      },
+    };
   },
   created() {
-    for (var i = 0; i < 1000; i++){
-      this.test.push(i)
-    }
+   
   },
   mounted() {
     

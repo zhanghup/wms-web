@@ -61,10 +61,10 @@ export default {
   name: "z-table",
   components: { zFilter, zDialog },
   props: {
-    list:Array,
+    list:{ type: Array, required: false },
     page: { type: Boolean, default: true },
     column: { type: Object, required: true },
-    expand: Object
+    expand: { type: Object, required: false },
   },
   data() {
     return {
@@ -89,7 +89,7 @@ export default {
       return columns(this.column.cols);
     },
     Datas() {
-      return [...this.addedData, ...this.datas];
+      return [...this.addedData, ...(this.datas||[])];
     },
   },
   methods: {

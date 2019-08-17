@@ -1,14 +1,14 @@
 <template>
   <div style="padding:5px 0;">
     <div>
-      <div class="filter-select">
+      <div class="filter-select" v-if="Filters.length > 0">
         <div class="flex">
-          <el-select size="mini" style="width:120px" v-model="select" placeholder="请选择" @change="filterChange">
+          <el-select size="mini" style="width:95px" v-model="select" placeholder="请选择" @change="filterChange">
             <el-option v-for="item in Filters" :key="item.key" :label="item.title" :value="item.key"></el-option>
           </el-select>
           <div v-for="item in Filters" :key="item.key" v-show="select == item.key" style="display:flex;">
-            <el-input style="width:220px" v-if="item.type == 'string'" size="mini" v-model="query[item.key]" :placeholder="'请输入'+item.title" />
-            <el-input-number style="width:220px" v-show="select == item.key" v-if="item.type == 'number'" size="mini" v-model="query[item.key]"  :label="'请输入' + item.title" />
+            <el-input style="width:180px" v-if="item.type == 'string'" size="mini" v-model="query[item.key]" :placeholder="'请输入'+item.title" />
+            <el-input-number style="width:180px" v-show="select == item.key" v-if="item.type == 'number'" size="mini" v-model="query[item.key]"  :label="'请输入' + item.title" />
             <el-button size="mini" @click="filterSearch(item)" icon="el-icon-search"></el-button>
           </div>
           

@@ -1,7 +1,7 @@
 <template>
   <div class="head">
     <div style="flex-grow:1">
-      没什么东东
+      zander
     </div>
     <div class="avatar">
       <el-dropdown class="z-middle">
@@ -46,8 +46,9 @@ export default {
   padding:2px 10px;
   display:flex;
   align-items:center;
-  background-color: #fff;
-  border-bottom: 1px solid #d8dce5;
+  background-color: #32567c;
+  border-bottom: 1px solid #2a2a2b;
+  color:#fff;
 }
 
 .avatar{

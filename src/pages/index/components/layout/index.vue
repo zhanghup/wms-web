@@ -3,7 +3,7 @@
     <div>
       <z-head/>
     </div>
-    <div class="body">
+    <div class="body" :style="{height:bodyHeight}">
       <z-menu/>
       <section class="section-content">
         <router-view class="router-view" style="height:100%"/>
@@ -23,16 +23,21 @@ export default {
   components: { zMenu,zHead },
   data() {
     return {
+      headerHeight:57,
       height: "1000px",
+      bodyHeight:"1000px"
     };
   },
   created() {
     let self = this;
-    self.height = document.documentElement.clientHeight+ "px";
+    let height = document.documentElement.clientHeight
+    self.height = height+ "px";
+    self.bodyHeight =  height - self.headerHeight + "px"
     setInterval(function(){
-      let height = document.documentElement.clientHeight+ "px";
-      if (self.height != height){
-        self.height = height
+      height = document.documentElement.clientHeight;
+      if (self.height != height+ "px"){
+        self.height = height + "px"
+        self.bodyHeight =  height - self.headerHeight + "px"
       }
     },20)
   },
