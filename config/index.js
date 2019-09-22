@@ -1,6 +1,4 @@
 'use strict'
-// Template version: 1.3.1
-// see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
 
@@ -11,8 +9,14 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/zd': {
-        target: 'http://127.0.0.1:40018/',
+      '/base': {
+        target: 'http://127.0.0.1:8899/',
+        pathRewrite: {},
+        changeOrigin: true,     // target是域名的话，需要这个参数，
+        secure: false,          // 设置支持https协议的代理
+      },
+      '/auth': {
+        target: 'http://127.0.0.1:8899/',
         pathRewrite: {},
         changeOrigin: true,     // target是域名的话，需要这个参数，
         secure: false,          // 设置支持https协议的代理

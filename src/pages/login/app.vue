@@ -1,19 +1,18 @@
 <template>
   <div class="login-container">
-    <el-form :model="form" :rules="rules" ref="form" class="login-form">
+    <div class="login-form">
       <div style>
         <h1 style="display:inline-block;color:#eee;margin-bottom:40px;">系统登录</h1>
       </div>
-      <el-form-item prop="account">
-        <span class="iconfont">&#xeb01;</span>
-        <el-input type="text" v-model="form.account" auto-complete="off" placeholder="请输入用户名"></el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <span class="iconfont">&#xe9a8;</span>
-        <el-input type="password" v-model="form.password" auto-complete="off" placeholder="请输入密码"></el-input>
-      </el-form-item>
+      <zform ref="form" labelWidth="0px" v-model="form" :fields="[
+          { title :'用户名',key:'account',type:'input',icon:'icon-user',labelHide:true},
+          { title :'密码',key:'password',type:'password',icon:'icon-key',labelHide:true},
+        ]"
+      />
+    
       <el-button type="primary" style="width:100%;" @click="submitForm()">登录</el-button>
-    </el-form>
+    </div>
+    
   </div>
 </template>
 
@@ -23,14 +22,35 @@ export default {
   data() {
     return {
       form: {
-        account: "",
-        password: ""
-      },
-      rules: {
-        account: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        account: "5d6aa87c1fa8d53ae054e32d",
+        password: "Aa123456"
       }
     };
+  },
+  
+  methods: {
+    submitForm() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          ap.$mutate(`
+            mutation Login{
+              login(account:"${this.form.account}",password:"${this.form.password}")
+            }
+          `,null,"auth").then(r=>{
+            let redirect = ap.Query("redirect")
+            if (redirect && redirect.length > 0){
+              location.href = redirect
+            }else{
+              location.href = "index.html";
+            }
+          }).catch(r=>{
+              this.$message.error('登录失败');
+          })
+        } else {
+          return false;
+        }
+      });
+    }
   },
   created() {
     let self = this;
@@ -44,24 +64,6 @@ export default {
   },
   mounted() {},
   destroyed() {},
-  methods: {
-    submitForm() {
-      this.$refs.form.validate(valid => {
-        if (valid) {
-          this.$http.login(this.form).then(r => {
-            let redirect = ap.Query("redirect")
-            if (redirect && redirect.length > 0){
-              location.href = redirect
-            }else{
-              location.href = "index.html";
-            }
-          });
-        } else {
-          return false;
-        }
-      });
-    }
-  }
 };
 </script>
 
@@ -85,24 +87,24 @@ $light_gray: #eee;
     margin: 0 auto;
     overflow: hidden;
 
-    .el-form-item {
+    /deep/ .el-form-item {
       border: 1px solid rgba(255, 255, 255, 0.1);
       background: rgba(0, 0, 0, 0.1);
       border-radius: 5px;
-
       color: #eee;
-      span {
+
+      /deep/ span {
         font-size: 22px;
         position: relative;
         top: 1px;
       }
-      .el-input {
+      /deep/ .el-input {
         background: transparent;
         width: calc(100% - 40px);
         /deep/ .el-input__inner {
           border: none;
           color: #eee;
-          font-size: 18px;
+          font-size: 14px;
           background: transparent;
         }
       }

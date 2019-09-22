@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import upperFirst from 'lodash/upperFirst'
-import camelCase from 'lodash/camelCase'
 
 const requireComponent = require.context(
   // 其组件目录的相对路径
@@ -12,20 +10,7 @@ const requireComponent = require.context(
 )
 
 requireComponent.keys().forEach(fileName => {
-  // 获取组件配置
   const componentConfig = requireComponent(fileName)
-
-  // 获取组件的 PascalCase 命名
-  // const componentName = upperFirst(
-  //   camelCase(
-  //     // 获取和目录深度无关的文件名
-  //     fileName
-  //     .split('/')
-  //     .pop()
-  //     .replace(/\.\w+$/, '')
-  //   )
-  // )
-  // console.log(componentName, fileName, componentConfig)
 
   // 全局注册组件
   Vue.component(
