@@ -20,7 +20,7 @@ export const columns = columns => {
     datas.push(obj)
   }
   return datas
-};
+}
 /*
   drule说明：
   |- 类型     说明
@@ -55,47 +55,4 @@ export const dialog = columns => {
     datas.push(obj)
   }
   return datas
-};
-export const dialogTypeFormat = (col, obj, ext) => {
-  let columns = dialog(col)
-  let r = {}
-  for (let i = 0; i < columns.length; i++) {
-    r[columns[i].key] = columns[i].dtype
-  }
-
-  let form = JSON.parse(JSON.stringify(obj))
-  for (let k in form) {
-    if (form[k] === undefined || form[k] === null) {
-      continue
-    }
-    switch (r[k]) {
-      case 'string':
-        form[k] = form[k] + '';
-        break
-      case 'number':
-        form[k] = parseFloat(form[k])
-    }
-  }
-  return { ...form, ...ext }
-};
-
-export const list = funcName => {
-  return param => {
-    return http[funcName + 'List'](param)
-  };
-}
-export const add = funcName => {
-  return param => {
-    return http[funcName + 'Create'](param)
-  };
-}
-export const edit = funcName => {
-  return param => {
-    return http[funcName + 'Update'](param)
-  };
-}
-export const del = funcName => {
-  return param => {
-    return http[funcName + 'Delete'](param)
-  };
 }

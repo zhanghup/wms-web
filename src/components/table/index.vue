@@ -1,13 +1,23 @@
 <template>
-  <div id="wrap">
-    <z-filter class="filter" :column="column" :refresh="Refresh">
+  <div class="wrap">
+    <div  class="filter">
+      <div class="ff"></div>
+      <div class="btns">
+        <el-button-group>
+          <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
+          <el-button type="primary" size="mini" icon="el-icon-share"></el-button>
+          <el-button type="primary" @click="Refresh" size="mini" icon="el-icon-refresh"></el-button>
+        </el-button-group>
+      </div>
+    </div>
+    <!-- <z-filter :column="column" :refresh="Refresh">
       <template slot="right-btn">
         <z-dialog :dialogAdd="_rowAdd" :column="column" type="primary" size="small" />
       </template>
-    </z-filter>
-    <el-table id="table" :height="tableHeight" :data="Datas" :highlight-current-row="true" style="width: 100%">
-      <el-table-column v-if="expand" type="expand">
-        <template slot-scope="props" style="background-color:#fbfbfb;" v-if="props.row[expand.key] && props.row[expand.key].length > 0">
+    </z-filter> -->
+    <el-table ref="table" class="table" :height="tableHeight" :data="data" :highlight-current-row="true" style="width: 100%">
+      <!-- <el-table-column v-if="expand" type="expand">
+        <template slot-scope="props" style="background-color:#fbfbfb;" v-if="props.row[expand.key] && props.row[expand.key].length > 0"> -->
           <!--
             expand:{
               type:'array',
@@ -18,7 +28,7 @@
               ]
             }
           -->
-          <el-card v-if="expand && expand.type == 'array'" class="box-card">
+          <!-- <el-card v-if="expand && expand.type == 'array'" class="box-card">
             <div slot="header" class="clearfix"><span>{{expand.title}}</span></div>
             <el-table :show-header="false" :data="props.row[expand.key]" border style="width: 100%">
               <el-table-column type="index" width="50"/>
@@ -32,136 +42,105 @@
             </el-table>
           </el-card>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column type="index" width="50"/>
-      <el-table-column v-for="item in Columns" :key="item.key" :label="item.title" :prop="item.key"></el-table-column>
+      <el-table-column v-for="item in columns" :key="item.key" :label="item.title" >
+        <template slot-scope="scope">
+          <div>{{ GetValue(scope,item)}}</div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <z-dialog v-if="expand" :column="expand" :extends="scope.row" type="primary" />
-          <z-dialog type="primary" v-model="scope.row" :column="column" actionType="edit" label="编辑" />
-          <el-button size="mini" type="danger" @click="_rowDel(scope.row)">删除</el-button>
+          <!-- <z-dialog v-if="expand" :column="expand" :extends="scope.row" type="primary" />
+          <z-dialog type="primary" v-model="scope.row" :column="column" actionType="edit" label="编辑" /> -->
+          <i class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete(scope.row)"></i>
+          <!-- <el-button size="mini" type="danger">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination v-if="page"
+    <el-pagination v-if="isPage"
       @size-change="changeSize"
       @current-change="changePage"
-      :current-page="query.page.index"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="query.page.size"
+      :current-page="tablePage.index"
+      :page-sizes="[50, 100, 250, 500]"
+      :page-size="tablePage.size"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total" style="text-align:right;background-color:#fff;" />
   </div>
 </template>
 <script>
-import { columns, add, del, edit, list } from "./modules/actions";
-import zFilter from "./modules/filters";
-import zDialog from "./modules/dialog";
+// import { columns, add, del, edit, list } from "./modules/actions";
+// import zFilter from "./modules/filters";
+// import zDialog from "./modules/dialog";
 export default {
   name: "z-table",
-  components: { zFilter, zDialog },
+  // components: { zFilter, zDialog },
   props: {
-    list:{ type: Array, required: false },
-    page: { type: Boolean, default: true },
-    column: { type: Object, required: true },
+    loadData:{ type: Function, required: true },
+    data:Array,
+    total: Number,
+    isPage: { type: Boolean, default: true },
+    columns: { type: Array, required: true },
     expand: { type: Object, required: false },
   },
   data() {
     return {
+      // 系统配置
       tableHeight: 0,
       timer: {},
+
+      // 数据配置
       addedData: [],
       datas: [],
-      total:0,
-      query: {
-        page: {index:1,size:100},
-        param: {}
-      }
+      tablePage:{index:1,size:50,count:true},
+      tableQuery:{}
     };
   },
   computed: {
-    ExpandColumns() {
-      if (this.expand) {
-        return columns(this.expand.cols);
-      }
-    },
-    Columns() {
-      return columns(this.column.cols);
-    },
-    Datas() {
-      return [...this.addedData, ...(this.datas||[])];
-    },
+   
   },
   methods: {
+    GetValue({$index,col,row},column){
+      return ap.GetValue(column.key,row)
+    },
     Refresh() {
+      console.log("-------")
       this.addedData = [];
-      this.loadData();
+      this.LoadData();
     },
     changePage(i){
-      this.query.page.index = i
-      this.loadData()
+      this.tablePage.index = i
+      this.LoadData()
     },
     changeSize(i){
-      this.query.page.size = i
-      this.loadData()
+      this.tablePage.size = i
+      this.LoadData()
     },
-    loadData() {
+    LoadData() {
       let param;
-      if (this.page) {
-        param = { ...this.query.page, ...this.query.param };
+      if (this.isPage) {
+        param = { ...this.tablePage, ...this.tableQuery };
       } else {
-        param = { ...this.query.param };
+        param = { ...this.tableQuery };
       }
-      if (!this.column.action){
-        if (this.list && this.list.length > 0){
-          this.datas = this.list
-        }
-        return
-      }
-      list(this.column.action)(param).then(r => {
-        if (this.page) {
-          this.datas = r.datas;
-          this.total = r.total;
-        } else {
-          this.datas = r;
-        }
-      });
+      this.loadData(param)
     },
-    _rowAdd(r) {
-      this.addedData.push(r);
-    },
-    _rowDel(r) {
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+    onDelete(row){
+      this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       }).then(() => {
-        del(this.column.action)({ id: r.id }).then(r => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-          this.loadData();
-        });
-      });
-    },
-    _expandAdd(r){
-      this.loadData();
-    },
-    _expandDel(r){
-      this.$confirm("此操作将永久删除该数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        del(this.expand.action)({ id: r.id }).then(r => {
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-          this.loadData();
-        });
-      });
+        this.$emit("on-delete",row)
+        setTimeout(()=>{
+          this.LoadData()
+        },1000)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });         
+      })
     }
   },
   beforeDestroy() {
@@ -170,22 +149,33 @@ export default {
   },
   created() {
     let self = this;
-    this.loadData();
+    this.LoadData();
     this.timer = setInterval(function() {
-      let height = document.getElementById("table").clientHeight;
+      let height = self.$refs.table.$el.clientHeight;
       if (self.tableHeight != height) {
         self.tableHeight = height;
       }
     }, 20);
   }
-};
+}
 </script>
 <style lang="scss" scoped>
-#wrap {
+.wrap {
   height: 100%;
   display: flex;
   flex-direction: column;
-  #table {
+
+  .filter{
+    display: flex;
+    padding-bottom: 5px;
+    .ff{
+      flex:1
+    }
+    .btns{
+
+    }
+  }
+  .table {
     flex-grow: 1;
   }
 }

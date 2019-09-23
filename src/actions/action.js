@@ -6,10 +6,12 @@ import {ApolloLink} from 'apollo-link'
 import Tag from 'graphql-tag'
 
 const apiLink = new HttpLink({
-  uri: process.env.BASE_URL + '/base' // 请求路径
+  uri: process.env.BASE_URL + '/base', // 请求路径
+  fetchPolicy: 'no-cache'
 })
 const authLink = new HttpLink({
-  uri: process.env.BASE_URL + '/auth'// 请求路径
+  uri: process.env.BASE_URL + '/auth', // 请求路径
+  fetchPolicy: 'no-cache'
 })
 
 const middlewareLink = new ApolloLink((operation, forward) => {
@@ -24,12 +26,14 @@ const middlewareLink = new ApolloLink((operation, forward) => {
 
 const baseClient = new ApolloClient({
   link: middlewareLink.concat(apiLink), // 如果不添加请求头直接放路径
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  fetchPolicy: 'no-cache'
 })
 
 const authClient = new ApolloClient({
   link: middlewareLink.concat(authLink), // 如果不添加请求头直接放路径
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
+  fetchPolicy: 'no-cache'
 })
 
 const apollo = new VueApollo({
