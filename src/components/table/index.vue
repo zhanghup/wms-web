@@ -1,48 +1,33 @@
 <template>
   <div class="wrap">
     <div  class="filter">
-      <div class="ff"></div>
+      <div class="ff">
+        <z-filter :filters="filters"/>
+      </div>
       <div class="btns">
-        <el-button-group>
-          <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
-          <el-button type="primary" size="mini" icon="el-icon-share"></el-button>
-          <el-button type="primary" @click="Refresh" size="mini" icon="el-icon-refresh"></el-button>
-        </el-button-group>
+          <slot name="btns-left"></slot>
+          <el-dropdown v-if="showExport" size="small" @command="Export">
+            <el-tooltip class="item" effect="dark" content="导出Excel" placement="top">
+             <el-button size="mini" icon="el-icon-download" circle />
+            </el-tooltip>
+             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="page-current">本页</el-dropdown-item>
+              <el-dropdown-item command="page-all">所有</el-dropdown-item>
+             </el-dropdown-menu>
+          </el-dropdown>
+            <el-tooltip v-if="showReset" class="item" effect="dark" content="重置" placement="top">
+              <el-button @click="Refresh" size="mini" icon="el-icon-refresh-left" circle></el-button>
+            </el-tooltip>
+            <el-tooltip v-if="showColumnSet" class="item" effect="dark" content="列设置" placement="top">
+              <el-button @click="Refresh" size="mini" icon="el-icon-s-tools" circle></el-button>
+            </el-tooltip>
+            <el-tooltip v-if="showRefresh" class="item" effect="dark" content="刷新" placement="top">
+              <el-button @click="Refresh" size="mini" icon="el-icon-refresh" circle></el-button>
+            </el-tooltip>
+          <slot name="btns-right"></slot>
       </div>
     </div>
-    <!-- <z-filter :column="column" :refresh="Refresh">
-      <template slot="right-btn">
-        <z-dialog :dialogAdd="_rowAdd" :column="column" type="primary" size="small" />
-      </template>
-    </z-filter> -->
     <el-table ref="table" class="table" :height="tableHeight" :data="data" :highlight-current-row="true" style="width: 100%">
-      <!-- <el-table-column v-if="expand" type="expand">
-        <template slot-scope="props" style="background-color:#fbfbfb;" v-if="props.row[expand.key] && props.row[expand.key].length > 0"> -->
-          <!--
-            expand:{
-              type:'array',
-              title:'标题',
-              key:'values',
-              colunms:[
-                {title:'列标题',key:'关联字段'},
-              ]
-            }
-          -->
-          <!-- <el-card v-if="expand && expand.type == 'array'" class="box-card">
-            <div slot="header" class="clearfix"><span>{{expand.title}}</span></div>
-            <el-table :show-header="false" :data="props.row[expand.key]" border style="width: 100%">
-              <el-table-column type="index" width="50"/>
-              <el-table-column v-for="item in ExpandColumns" :key="item.key" :prop="item.key" :label="item.title" :width="item.width" />
-              <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                  <z-dialog type="primary" v-model="scope.row" :column="expand" actionType="edit" label="编辑" />
-                  <el-button size="mini" type="danger" @click="_expandDel(scope.row)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-card>
-        </template>
-      </el-table-column> -->
       <el-table-column type="index" width="50"/>
       <el-table-column v-for="item in columns" :key="item.key" :label="item.title" >
         <template slot-scope="scope">
@@ -51,10 +36,11 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <!-- <z-dialog v-if="expand" :column="expand" :extends="scope.row" type="primary" />
-          <z-dialog type="primary" v-model="scope.row" :column="column" actionType="edit" label="编辑" /> -->
+          <slot name="column-edit"></slot>
+          <z-form slot="btns-left" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
+            <i class="el-icon-edit" style="cursor:pointer;color:blue;margin-right:4px;"></i>
+          </z-form>
           <i class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete(scope.row)"></i>
-          <!-- <el-button size="mini" type="danger">删除</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -69,93 +55,125 @@
   </div>
 </template>
 <script>
-// import { columns, add, del, edit, list } from "./modules/actions";
-// import zFilter from "./modules/filters";
-// import zDialog from "./modules/dialog";
+import zFilter from './modules/filters'
+import zForm from '../form'
+import excel from '../../actions/excel.js'
 export default {
-  name: "z-table",
-  // components: { zFilter, zDialog },
+  name: 'z-table',
+  components: { zFilter, zForm },
   props: {
-    loadData:{ type: Function, required: true },
-    data:Array,
+    showExport: {type: Boolean, default: true},
+    showColumnSet: {type: Boolean, default: true},
+    showRefresh: {type: Boolean, default: true},
+    showReset: {type: Boolean, default: true},
+
+    loadData: { type: Function, required: true },
+    data: Array,
     total: Number,
     isPage: { type: Boolean, default: true },
     columns: { type: Array, required: true },
-    expand: { type: Object, required: false },
+    filters: { type: Array, required: false },
+
+    editFields: Array
   },
-  data() {
+  data () {
     return {
       // 系统配置
       tableHeight: 0,
       timer: {},
 
       // 数据配置
+      editForm: {},
       addedData: [],
       datas: [],
-      tablePage:{index:1,size:50,count:true},
-      tableQuery:{}
-    };
+      tablePage: {index: 1, size: 50, count: true},
+      tableQuery: {}
+    }
   },
   computed: {
-   
+
   },
   methods: {
-    GetValue({$index,col,row},column){
-      return ap.GetValue(column.key,row)
+    GetValue ({$index, col, row}, column) {
+      return ap.GetValue(column.key, row)
     },
-    Refresh() {
-      console.log("-------")
-      this.addedData = [];
-      this.LoadData();
+    Refresh () {
+      this.addedData = []
+      this.LoadData()
     },
-    changePage(i){
+    Export (type) {
+      function fn () {
+        excel({
+          columns: [],
+          header: [],
+          data: [],
+          sheetName: '',
+          fileName: ''
+
+        })
+      }
+      switch (type) {
+        case 'page-current':fn()
+        case 'page-all':
+      }
+    },
+    changePage (i) {
       this.tablePage.index = i
       this.LoadData()
     },
-    changeSize(i){
+    changeSize (i) {
       this.tablePage.size = i
       this.LoadData()
     },
-    LoadData() {
-      let param;
+    LoadData () {
+      let param
       if (this.isPage) {
-        param = { ...this.tablePage, ...this.tableQuery };
+        param = { ...this.tablePage, ...this.tableQuery }
       } else {
-        param = { ...this.tableQuery };
+        param = { ...this.tableQuery }
       }
       this.loadData(param)
     },
-    onDelete(row){
+    onEdit (row) {
+      return _ => {
+        this.editForm = row
+        return row
+      }
+    },
+    editConfirm (input) {
+      this.$emit('on-edit-confirm', this.editForm.id, input)
+    },
+    onDelete (row) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$emit("on-delete",row)
-        setTimeout(()=>{
+        this.$emit('on-delete', row)
+        setTimeout(() => {
           this.LoadData()
-        },1000)
+        }, 300)
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        });         
+        })
       })
     }
   },
-  beforeDestroy() {
-    clearInterval(this.timer);
-    this.timer = null;
+  beforeDestroy () {
+    clearInterval(this.timer)
+    this.timer = null
   },
-  created() {
-    let self = this;
-    this.LoadData();
-    this.timer = setInterval(function() {
-      let height = self.$refs.table.$el.clientHeight;
-      if (self.tableHeight != height) {
-        self.tableHeight = height;
+  created () {
+    let self = this
+    this.LoadData()
+    this.timer = setInterval(function () {
+      let height = self.$refs.table.$el.clientHeight
+      if (self.tableHeight !== height) {
+        self.tableHeight = height
       }
-    }, 20);
+    }, 20)
   }
 }
 </script>
@@ -179,5 +197,7 @@ export default {
     flex-grow: 1;
   }
 }
+.el-button--mini.is-circle{
+  margin-left:0px;
+}
 </style>
-

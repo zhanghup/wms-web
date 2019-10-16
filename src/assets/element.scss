@@ -6,3 +6,12 @@
   border-style: solid;
   border-color: #f0f0f0;
 }
+
+.el-select-dropdown__list{
+  padding:5px 0;
+  .el-select-dropdown__item{
+    line-height:28px;;
+    height:28px;
+    font-size:12px;
+  }
+}

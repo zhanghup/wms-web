@@ -1,20 +1,20 @@
 <template>
   <div class="dicts">
-        <z-table class="item" ref="table" :columns=" [
+        <z-table class="item" :columns=" [
           { title: '字典编码', key: 'code' },
           { title: '名称', key: 'name' },
           { title: '排序', key: 'weight'}
         ]"
-        :loadData="loadData"
-        :editFields="formDict"
         :total="total"
         :data="data"
         :filters="[
             { title:'名称',key:'name',type:'string'},
             { title:'名称2',key:'name2',type:'number'},
         ]"
+        :loadData="loadData"
+        ref="table"
         @on-delete="deleteDict"
-        @on-edit-confirm="editConfirm"
+        @on-edit="editDict"
         >
         <z-form slot="btns-left" :fields="formDict" @on-confirm="onConfirm" width="480px"></z-form>
 
@@ -95,14 +95,8 @@ export default {
         this.$refs.table.LoadData()
       })
     },
-    editConfirm (id, input) {
-      ap.$mutate(`
-        mutation DictEdit($input:UpdDict!){
-          dict_update(id:"${id}",input:$input)
-        }
-      `, {input}).then(r => {
-        this.$refs.table.LoadData()
-      })
+    editDict (row) {
+
     },
     deleteDict (row, fn) {
       ap.$mutate(`

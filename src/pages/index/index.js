@@ -13,7 +13,7 @@ import '@/components/index.js'
 
 Vue.config.productionTip = false
 
-Vue.use(Element)
+Vue.use(Element, { size: 'small', zIndex: 3000 })
 
 /* eslint-disable no-new */
 new Vue({
