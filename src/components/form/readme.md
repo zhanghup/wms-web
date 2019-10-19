@@ -50,4 +50,17 @@
 
 ## items 用户渲染列表
 
+## action 只显示在某个行为下['add','edit']
+如下所示，该字段只会在新增的时候，有效
+```json
+[
+  {
+    "title":"标题",
+    "key":"取值",
+    "field":"title",
+    "type":"input:text",
+    "action":"add"
+  }
+]
+
 

@@ -43,10 +43,10 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <slot name="column-edit"></slot>
-          <z-form slot="btns-left" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
+          <z-form slot="btns-left" :type="'edit'" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
             <i class="el-icon-edit" style="cursor:pointer;color:blue;margin-right:4px;"></i>
           </z-form>
-          <i class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete(scope.row)"></i>
+          <i class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete([scope.row])"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -149,13 +149,13 @@ export default {
     editConfirm (input) {
       this.$emit('on-edit-confirm', this.editForm.id, input)
     },
-    onDelete (row) {
+    onDelete (rows) {
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$emit('on-delete', row)
+        this.$emit('on-delete', rows)
         setTimeout(() => {
           this.LoadData()
         }, 300)
@@ -201,6 +201,9 @@ export default {
   }
   .table {
     flex-grow: 1;
+    /deep/ .el-table__row.current-row > td{
+      background-color: #ddfd;
+    }
   }
 }
 .el-button--mini.is-circle{

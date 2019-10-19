@@ -13,24 +13,31 @@
             { title:'名称',key:'name',type:'string'},
             { title:'名称2',key:'name2',type:'number'},
         ]"
-        @on-delete="deleteDict"
-        @row-click="rowClick"
-        @on-edit-confirm="editConfirm"
+        @on-delete="dictDelete"
+        @row-click="dictRowClick"
+        @on-edit-confirm="dictEditConfirm"
         >
-        <z-form slot="btns-left" :fields="formDict" @on-confirm="onConfirm" width="480px"></z-form>
+        <z-form 
+          slot="btns-left" 
+          width="480px"
+          :fields="formDict" 
+          @on-confirm="onConfirm"></z-form>
 
         </z-table>
-       <z-table class="item" :columns=" [
+       <z-table class="item" ref="table" 
+        :columns=" [
           { title: '名称', key: 'name' },
           { title: '值', key: 'value' },
           { title: '扩展', key: 'expression'}
         ]"
         :total="totalItems"
-        ref="table"
+        :editFields="formDictItem"
         :data="dataItems||[]"
         :loadData="loadData"
+        @on-edit-confirm="dictItemEditConfirm"
+        @on-delete="dictItemDelete"
         >
-        <z-form  width="480px" :fields="formDictItem" @on-confirm="onConfirmDictItem" slot="btns-left"></z-form>
+        <z-form  width="480px" :fields="formDictItem" @on-confirm="onConfirmDictItem" :beforeOpen="beforeOpenItem" slot="btns-left"></z-form>
        </z-table>
 
   </div>
@@ -54,12 +61,14 @@ export default {
         {type: 'input:number', title: '排序', key: 'weight', span: 24, default: 1}
       ],
       formDictItem: [
-        {type: 'input:text', title: '字典编码', key: 'code', span: 24},
+        {type: 'input:text', title: '字典编码', key: 'code', span: 24,action:"add"},
         {type: 'input:text', title: '字典名', key: 'name', span: 24},
-        {type: 'input:textarea', title: '备注', key: 'remark', span: 24},
+        {type: 'input:text', title: '字典值', key: 'value', span: 24},
+        {type: 'input:text', title: '扩展', key: 'extension', span: 24},
         {type: 'switch', title: '状态', key: 'status', span: 24, default: 1},
         {type: 'input:number', title: '排序', key: 'weight', span: 24, default: 1}
-      ]
+      ],
+      currentDict:null,
 
     }
   },
@@ -97,8 +106,9 @@ export default {
         this.total = r.dicts.total
       })
     },
-    rowClick (row) {
+    dictRowClick (row) {
       this.dataItems = row.values
+      this.currentDict = row
     },
     onConfirm (input) {
       ap.$mutate(`
@@ -110,7 +120,7 @@ export default {
         this.$refs.table.LoadData()
       })
     },
-    editConfirm (id, input) {
+    dictEditConfirm (id, input) {
       ap.$mutate(`
         mutation DictEdit($input:UpdDict!){
           dict_update(id:"${id}",input:$input)
@@ -119,30 +129,64 @@ export default {
         this.$refs.table.LoadData()
       })
     },
-    deleteDict (row, fn) {
+    dictDelete (rows, fn) {
       ap.$mutate(`
         mutation DictRemoves($ids:[String!]){
           dict_removes(ids:$ids)
         }
       `, {
-        ids: [row.id]
+        ids: rows.map(r=>r.id)
       }).then(r => {
         if (fn) {
           fn()
         }
       })
     },
-    onConfirmDictItem (input) {
+    dictItemEditConfirm(id,input){
       ap.$mutate(`
-        mutation DictItemCreate($input:NewDictItem!){
-          dict_item_create(input:$input)
+        mutation DictItemEdit($input:UpdDictItem!){
+          dict_item_update(id:"${id}",input:$input)
         }
       `, {input}).then(r => {
         this.$refs.table.LoadData()
       })
     },
-    confirmDictitem (row, fn) {
-
+    onConfirmDictItem (input) {
+      ap.$mutate(`
+        mutation DictItemCreate($input:NewDictItem!){
+          dict_item_create(input:$input){
+            id
+          }
+        }
+      `, {input}).then(r => {
+        this.$refs.table.LoadData()
+      })
+    },
+    beforeOpenItem(){
+      if (!this.currentDict){
+        this.$message({
+          message: '警告哦，这是一条警告消息',
+          type: 'warning'
+        })
+        return false
+      }
+      return {
+        code: this.currentDict.code
+      }
+    },
+    dictItemDelete(rows,fn){
+      ap.$mutate(`
+        mutation DictItemRemoves($ids:[String!]){
+          dict_item_removes(ids:$ids)
+        }
+      `, {
+        ids: rows.map(r=>r.id)
+      }).then(r => {
+        this.dataItems = this.dataItems.filter(r=>rows.map(r=>r.id).indexOf(r.id) > -1 )
+        if (fn) {
+          fn()
+        }
+      })
     }
   },
   created () {}

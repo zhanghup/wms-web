@@ -3,7 +3,7 @@
     <span @click="onOpen">
       <slot>
         <el-button :size="btnSize" :type="btnType"  icon="el-icon-plus">
-          {{type | Ftype}}
+          {{type | Ftitle}}
         </el-button>
       </slot>
     </span>
@@ -24,6 +24,7 @@
               <el-radio-group v-if="formType(item,'radio')" v-model="obj[item.field||item.key]">
                 <el-radio v-for="o in item.items||[]" :key="o.title" :label="o.value" :disabled="o.disabled">{{o.title}}</el-radio>
               </el-radio-group>
+              <!-- switch -->
               <el-switch v-if="formType(item,'switch')" v-model="obj[item.field||item.key]"></el-switch>
 
             </el-form-item>
@@ -59,12 +60,6 @@ export default {
     beforeOpen: Function
   },
   filters: {
-    Ftype (value) {
-      switch (value) {
-        case 'add': return '新增'
-        case 'edit': return '编辑'
-      }
-    },
     Ftitle (value, title) {
       if (title) return title
       switch (value) {
@@ -85,13 +80,25 @@ export default {
   methods: {
     onOpen () {
       if (this.beforeOpen) {
-        this.form = this.beforeOpen()
+        let flag = this.beforeOpen()
+        if (typeof(flag) === 'boolean' && !flag){
+          return
+        }
+        this.form = flag
       }
       this.initForm()
       this.showForm = true
     },
+    formItemShow(item){
+      let flag = true
+      if(item.action){
+        flag = item.action === this.type
+      }
+      return flag
+    },
     formType (item, kind) {
       let [ty, value] = item.type.split(':')
+      
       return ty === kind
     },
     formKind (val) {
@@ -117,7 +124,6 @@ export default {
         let fd = this.fields.find(r => r.key === k)
         if (!fd) continue
         let [ty] = fd.type.split(':')
-        console.log(ty)
         switch (ty) {
           case 'switch':this.obj[k] ? 1 : 0; break
           default:
