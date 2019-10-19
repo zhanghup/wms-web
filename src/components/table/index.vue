@@ -27,7 +27,13 @@
           <slot name="btns-right"></slot>
       </div>
     </div>
-    <el-table ref="table" class="table" :height="tableHeight" :data="data" :highlight-current-row="true" style="width: 100%">
+    <el-table ref="table"
+        class="table"
+        :height="tableHeight"
+        :data="data"
+        :highlight-current-row="true"
+        @row-click="row => $emit('row-click',row)"
+        style="width: 100%">
       <el-table-column type="index" width="50"/>
       <el-table-column v-for="item in columns" :key="item.key" :label="item.title" >
         <template slot-scope="scope">

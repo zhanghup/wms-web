@@ -14,22 +14,23 @@
             { title:'名称2',key:'name2',type:'number'},
         ]"
         @on-delete="deleteDict"
+        @row-click="rowClick"
         @on-edit-confirm="editConfirm"
         >
         <z-form slot="btns-left" :fields="formDict" @on-confirm="onConfirm" width="480px"></z-form>
 
         </z-table>
        <z-table class="item" :columns=" [
-          { title: '字典编码', key: 'code' },
           { title: '名称', key: 'name' },
-          { title: '排序', key: 'weight'}
+          { title: '值', key: 'value' },
+          { title: '扩展', key: 'expression'}
         ]"
-        :total="total"
+        :total="totalItems"
         ref="table"
-        :data="data"
+        :data="dataItems||[]"
         :loadData="loadData"
         >
-        <z-form  width="480px" @on-confirm="confirmDictitem" title="test" slot="btns-left"></z-form>
+        <z-form  width="480px" :fields="formDictItem" @on-confirm="onConfirmDictItem" slot="btns-left"></z-form>
        </z-table>
 
   </div>
@@ -42,13 +43,24 @@ export default {
     return {
       total: 0,
       data: [],
+
+      totalItems: 0,
+      dataItems: [],
       formDict: [
         {type: 'input:text', title: '字典编码', key: 'code', span: 24},
         {type: 'input:text', title: '字典名', key: 'name', span: 24},
         {type: 'input:textarea', title: '备注', key: 'remark', span: 24},
         {type: 'switch', title: '状态', key: 'status', span: 24, default: 1},
         {type: 'input:number', title: '排序', key: 'weight', span: 24, default: 1}
+      ],
+      formDictItem: [
+        {type: 'input:text', title: '字典编码', key: 'code', span: 24},
+        {type: 'input:text', title: '字典名', key: 'name', span: 24},
+        {type: 'input:textarea', title: '备注', key: 'remark', span: 24},
+        {type: 'switch', title: '状态', key: 'status', span: 24, default: 1},
+        {type: 'input:number', title: '排序', key: 'weight', span: 24, default: 1}
       ]
+
     }
   },
   methods: {
@@ -85,6 +97,9 @@ export default {
         this.total = r.dicts.total
       })
     },
+    rowClick (row) {
+      this.dataItems = row.values
+    },
     onConfirm (input) {
       ap.$mutate(`
         mutation DictAdd($input:NewDict!){
@@ -115,6 +130,15 @@ export default {
         if (fn) {
           fn()
         }
+      })
+    },
+    onConfirmDictItem (input) {
+      ap.$mutate(`
+        mutation DictItemCreate($input:NewDictItem!){
+          dict_item_create(input:$input)
+        }
+      `, {input}).then(r => {
+        this.$refs.table.LoadData()
       })
     },
     confirmDictitem (row, fn) {

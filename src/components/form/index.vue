@@ -19,12 +19,12 @@
         <el-form ref="form" :model="form" :label-width="fLabelWidth">
           <el-col v-for="item in fields" :key="item.key" :span="item.span || 12">
             <el-form-item :label="item.title">
-              <el-input v-if="formType(item.type) === 'input'" :type="formKind(item.type)" v-model="obj[item.field||item.key]"></el-input>
+              <el-input v-if="formType(item,'input')" :type="formKind(item.type)" v-model="obj[item.field||item.key]"></el-input>
               <!-- radio -->
-              <el-radio-group v-if="formType(item.type) === 'radio'" v-model="obj[item.field||item.key]">
+              <el-radio-group v-if="formType(item,'radio')" v-model="obj[item.field||item.key]">
                 <el-radio v-for="o in item.items||[]" :key="o.title" :label="o.value" :disabled="o.disabled">{{o.title}}</el-radio>
               </el-radio-group>
-              <el-switch v-if="formType(item.type) === 'switch'" v-model="obj[item.field||item.key]"></el-switch>
+              <el-switch v-if="formType(item,'switch')" v-model="obj[item.field||item.key]"></el-switch>
 
             </el-form-item>
           </el-col>
@@ -91,8 +91,8 @@ export default {
       this.showForm = true
     },
     formType (item, kind) {
-      let [ty] = item.type.split(':')
-      return ty
+      let [ty, value] = item.type.split(':')
+      return ty === kind
     },
     formKind (val) {
       let [ty, kind] = val.split(':')
