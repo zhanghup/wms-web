@@ -1,11 +1,17 @@
-
 import {http} from './action'
 import fmt from './format'
 
 const ap = {
   ...http,
+  SetStore (store) {
+    this.store = store
+    this.fmt = new fmt(store)
+  },
   GetValue (key, value) {
-    return new fmt().GetValue(key, value)
+    return this.fmt.GetValue(key, value)
+  },
+  FormatValue (key, format, value) {
+    return this.fmt.FormatValue(key, format, value)
   },
   Query (name) {
     const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
@@ -28,5 +34,5 @@ const ap = {
     return pattern.test(str)
   }
 }
-
+ap.SetStore()
 window.ap = ap

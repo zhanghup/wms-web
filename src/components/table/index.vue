@@ -35,18 +35,18 @@
         @row-click="row => $emit('row-click',row)"
         style="width: 100%">
       <el-table-column type="index" width="50"/>
-      <el-table-column v-for="item in columns" :key="item.key" :label="item.title" >
+      <el-table-column v-for="item in columns" :key="item.key" :label="item.title" :width="item.width||''" >
         <template slot-scope="scope">
           <div>{{ GetValue(scope,item)}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column v-if="showOperate" label="操作" align="center">
         <template slot-scope="scope">
           <slot name="column-edit"></slot>
-          <z-form slot="btns-left" :type="'edit'" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
+          <z-form v-if="showEdit" slot="btns-left" :type="'edit'" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
             <i class="el-icon-edit" style="cursor:pointer;color:blue;margin-right:4px;"></i>
           </z-form>
-          <i class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete([scope.row])"></i>
+          <i v-if="showDelete" class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete([scope.row])"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -61,6 +61,7 @@
   </div>
 </template>
 <script>
+import {mapState} from 'Vuex'
 import zFilter from './modules/filters'
 import zForm from '../form'
 import excel from '../../actions/excel.js'
@@ -72,6 +73,9 @@ export default {
     showColumnSet: {type: Boolean, default: true},
     showRefresh: {type: Boolean, default: true},
     showReset: {type: Boolean, default: true},
+    showOperate: {type: Boolean, default: true},
+    showEdit: {type: Boolean, default: true},
+    showDelete: {type: Boolean, default: true},
 
     loadData: { type: Function, required: true },
     data: Array,
@@ -81,6 +85,9 @@ export default {
     filters: { type: Array, required: false },
 
     editFields: Array
+  },
+  computed: {
+    ...mapState('common', ['dictmap'])
   },
   data () {
     return {
@@ -101,7 +108,7 @@ export default {
   },
   methods: {
     GetValue ({$index, col, row}, column) {
-      return ap.GetValue(column.key, row)
+      return ap.FormatValue(column.key, column.format, row)
     },
     Refresh () {
       this.addedData = []

@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <layout/>
+    <layout v-if="$store.state.common.dicts.length > 0"/>
   </div>
 </template>
 
 <script>
-import layout from "./components/layout/index";
-import { setInterval } from 'timers';
+import layout from './components/layout/index'
 export default {
-  name: "App",
-  components:{layout}
-};
+  name: 'App',
+  components: {layout},
+  created () {
+    this.$store.dispatch('common/load')
+  }
+}
 </script>
-
-

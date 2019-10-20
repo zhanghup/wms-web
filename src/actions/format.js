@@ -1,8 +1,8 @@
 export default class Util {
     slice_eq = /\[\](.*)\.(.*?)\s*={2,3}\s*(.*?);\s*(.*?)\s*$/
 
-    constructor (dict) {
-      this.dict = dict
+    constructor (store) {
+      this.$store = store
     }
 
     GetValue (key, obj) {
@@ -13,6 +13,25 @@ export default class Util {
       } else {
         return this.tkey_common_value(key, obj)
       }
+    }
+
+    FormatValue (key, format, obj) {
+      let value = this.GetValue(key, obj)
+      if (!format) return value
+      let [ty, kind] = format.split(':')
+      switch (ty) {
+        case 'dict': return this.formatDict(kind, value)
+      }
+    }
+
+    formatDict (kind, value) {
+      if (!kind) return value
+      let dictmap = this.$store.state.common.dictmap
+      let values = (dictmap[kind] || {}).values
+      if (!values) return value
+      let o = values.find(r => r.value === value)
+      if (!o) return
+      return o.name
     }
 
     tkey_components (key, obj) {

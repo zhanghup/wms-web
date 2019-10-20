@@ -18,14 +18,19 @@
       <div class="zform-body">
         <el-form ref="form" :model="form" :label-width="fLabelWidth">
           <el-col v-for="item in fields" :key="item.key" :span="item.span || 12">
-            <el-form-item :label="item.title">
-              <el-input v-if="formType(item,'input')" :type="formKind(item.type)" v-model="obj[item.field||item.key]"></el-input>
+            <el-form-item :label="item.title" v-if="formItemShow(item)">
+              <el-input v-if="formType(item,'input')" :type="formKind(item.type)" v-model="obj[item.field||item.key]" :placeholder='`请输入${item.title}`'></el-input>
               <!-- radio -->
               <el-radio-group v-if="formType(item,'radio')" v-model="obj[item.field||item.key]">
                 <el-radio v-for="o in item.items||[]" :key="o.title" :label="o.value" :disabled="o.disabled">{{o.title}}</el-radio>
               </el-radio-group>
               <!-- switch -->
               <el-switch v-if="formType(item,'switch')" v-model="obj[item.field||item.key]"></el-switch>
+
+              <!-- dict -->
+              <el-select style="width:100%" v-if="formType(item,'dict')" v-model="obj[item.field||item.key]" :placeholder='`请选择${item.title}`'>
+                <el-option v-for="item in dictmap[formKind(item.type)].values" :key="item.id" :label="item.name" :value="item.value"></el-option>
+              </el-select>
 
             </el-form-item>
           </el-col>
@@ -41,6 +46,7 @@
   </div>
 </template>
 <script>
+import {mapState} from 'Vuex'
 
 export default {
   name: 'z-form',
@@ -58,6 +64,9 @@ export default {
     fields: Array,
 
     beforeOpen: Function
+  },
+  computed: {
+    ...mapState('common', ['dictmap'])
   },
   filters: {
     Ftitle (value, title) {
@@ -81,7 +90,7 @@ export default {
     onOpen () {
       if (this.beforeOpen) {
         let flag = this.beforeOpen()
-        if (typeof(flag) === 'boolean' && !flag){
+        if (typeof (flag) === 'boolean' && !flag) {
           return
         }
         this.form = flag
@@ -89,16 +98,16 @@ export default {
       this.initForm()
       this.showForm = true
     },
-    formItemShow(item){
+    formItemShow (item) {
       let flag = true
-      if(item.action){
+      if (item.action) {
         flag = item.action === this.type
+        console.log(item.key, flag, item.action)
       }
       return flag
     },
     formType (item, kind) {
-      let [ty, value] = item.type.split(':')
-      
+      let [ty] = item.type.split(':')
       return ty === kind
     },
     formKind (val) {
@@ -136,8 +145,16 @@ export default {
       if (!this.fields) return
       let obj = {}
       for (let o of this.fields) {
+        if (!this.formItemShow(o)) continue
         let [ty] = o.type.split(':')
-        let val = o.default
+        let val = null
+        if (o.default != null) {
+          if (o.default instanceof Function) {
+            val = o.default()
+          } else {
+            val = o.default
+          }
+        }
         let v2 = ap.GetValue(o.key, this.form)
         if (v2 != undefined) {
           val = v2

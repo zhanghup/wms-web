@@ -47,6 +47,8 @@
 ## span 占用一行的多少长度，最大24
 
 ## default 默认值
+类型： String
+类型： Function
 
 ## items 用户渲染列表
 
