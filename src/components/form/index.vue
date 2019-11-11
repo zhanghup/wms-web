@@ -17,18 +17,18 @@
       >
       <div class="zform-body">
         <el-form ref="form" :model="form" :label-width="fLabelWidth">
-          <el-col v-for="item in fields" :key="item.key" :span="item.span || 12">
+          <el-col v-for="item in fieldList" :key="item.key" :span="item.span || 12">
             <el-form-item :label="item.title" v-if="formItemShow(item)">
-              <el-input v-if="formType(item,'input')" :type="formKind(item.type)" v-model="obj[item.field||item.key]" :placeholder='`请输入${item.title}`'></el-input>
+              <el-input v-if="formType(item,'input')" :type="formKind(item.type)" v-model="obj[item.field]" :placeholder='`请输入${item.title}`'></el-input>
               <!-- radio -->
-              <el-radio-group v-if="formType(item,'radio')" v-model="obj[item.field||item.key]">
+              <el-radio-group v-if="formType(item,'radio')" v-model="obj[item.field]">
                 <el-radio v-for="o in item.items||[]" :key="o.title" :label="o.value" :disabled="o.disabled">{{o.title}}</el-radio>
               </el-radio-group>
               <!-- switch -->
-              <el-switch v-if="formType(item,'switch')" v-model="obj[item.field||item.key]"></el-switch>
+              <el-switch v-if="formType(item,'switch')" v-model="obj[item.field]"></el-switch>
 
               <!-- dict -->
-              <el-select style="width:100%" v-if="formType(item,'dict')" v-model="obj[item.field||item.key]" :placeholder='`请选择${item.title}`'>
+              <el-select style="width:100%" v-if="formType(item,'dict')" v-model="obj[item.field]" :placeholder='`请选择${item.title}`'>
                 <el-option v-for="item in dictmap[formKind(item.type)].values" :key="item.id" :label="item.name" :value="item.value"></el-option>
               </el-select>
 
@@ -81,6 +81,9 @@ export default {
     return {
       showForm: false,
 
+      // 实际的fields格式化后的对象
+      fieldList:[],
+
       // 返回的form对象
       form: {},
       obj: {}
@@ -102,7 +105,6 @@ export default {
       let flag = true
       if (item.action) {
         flag = item.action === this.type
-        console.log(item.key, flag, item.action)
       }
       return flag
     },
@@ -168,9 +170,21 @@ export default {
       }
 
       this.obj = obj
+    },
+    formatFields(){
+      let s = []
+      if (!this.fields){
+        return
+      }
+      for(let o of this.fields){
+        o.field = o.field || o.key
+        s.push(o)
+      }
+      this.fieldList = s;
     }
   },
   created () {
+    this.formatFields()
   }
 }
 </script>

@@ -8,6 +8,7 @@
       :loadData="loadData"
       :editFields="formUser"
       @on-delete="userDelete"
+      @on-edit-confirm="userEdit"
       >
 
       <z-form
@@ -86,6 +87,15 @@ export default {
           user_create(input:$input){
             id
           }
+        }
+      `, {input}).then(r => {
+        this.$refs.table.LoadData()
+      })
+    },
+    userEdit(id,input){
+      ap.$mutate(`
+        mutation UserUpdate($input:UpdUser!){
+          user_update(id:"${id}",input:$input)
         }
       `, {input}).then(r => {
         this.$refs.table.LoadData()

@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div  class="filter">
-      <div class="ff">
+      <div class="ff" v-if="showFilter">
         <z-filter :filters="filters"/>
       </div>
       <div class="btns">
@@ -35,12 +35,12 @@
         @row-click="row => $emit('row-click',row)"
         style="width: 100%">
       <el-table-column type="index" width="50"/>
-      <el-table-column v-for="item in columns" :key="item.key" :label="item.title" :width="item.width||''" >
+      <el-table-column v-for="item in Columns" :key="item.key" :label="item.title" :width="item.width||''" >
         <template slot-scope="scope">
           <div>{{ GetValue(scope,item)}}</div>
         </template>
       </el-table-column>
-      <el-table-column v-if="showOperate" label="操作" align="center">
+      <el-table-column v-if="showOperate" label="操作" width="120" align="center" fixed="right">
         <template slot-scope="scope">
           <slot name="column-edit"></slot>
           <z-form v-if="showEdit" slot="btns-left" :type="'edit'" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
@@ -48,6 +48,9 @@
           </z-form>
           <i v-if="showDelete" class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete([scope.row])"></i>
         </template>
+      </el-table-column>
+      <el-table-column v-for="item in ColumnActions" :key="item.key" :fixed="item.fixed" :align="item.align" :label="item.title" :width="item.width||'120px'">
+        <slot :name="item.key">fff</slot>
       </el-table-column>
     </el-table>
     <el-pagination v-if="isPage"
@@ -69,6 +72,7 @@ export default {
   name: 'z-table',
   components: { zFilter, zForm },
   props: {
+    showFilter: {type: Boolean, default: true},
     showExport: {type: Boolean, default: true},
     showColumnSet: {type: Boolean, default: true},
     showRefresh: {type: Boolean, default: true},
@@ -104,7 +108,12 @@ export default {
     }
   },
   computed: {
-
+    Columns(){
+      return this.columns.filter(r=>r.type != 'custom')
+    },
+    ColumnActions(){
+      return this.columns.filter(r=>r.type == 'custom')
+    }
   },
   methods: {
     GetValue ({$index, col, row}, column) {

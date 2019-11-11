@@ -13,10 +13,9 @@ export const menus = [
     component: () => import('@/pages/index/views/index'),
     hidden: true,
     children: [
-      {path: 'menu', key: 'sys-menu', name: '菜单管理', component: () => import('@/pages/index/views/system/menu')},
       {path: 'dict', key: 'sys-dict', name: '数据字典', component: () => import('@/pages/index/views/system/dict')},
-      {path: 'auth', key: 'sys-auth', name: '权限管理', component: () => import('@/pages/index/views/system/auth')},
-      {path: 'user', key: 'sys-path', name: '用户管理', component: () => import('@/pages/index/views/system/user')}
+      {path: 'user', key: 'sys-path', name: '用户管理', component: () => import('@/pages/index/views/system/user')},
+      {path: 'role', key: 'sys-role', name: '角色管理', component: () => import('@/pages/index/views/system/role')},
     ]
   }
 ]
