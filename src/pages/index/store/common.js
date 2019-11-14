@@ -1,3 +1,5 @@
+import {http} from '@/actions/action'
+
 var common = {
   namespaced: true,
   state: {
@@ -6,7 +8,7 @@ var common = {
   },
   actions: {
     load ({commit}) {
-      ap.$query(`
+      http.$query(`
         query S{
            dicts(query:{
               index:1
@@ -43,7 +45,7 @@ var common = {
       })
     },
     loadDict ({commit}) {
-      ap.$query(`
+      http.$query(`
         query S{
            dicts(query:{
               index:1
