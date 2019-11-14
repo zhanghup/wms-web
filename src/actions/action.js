@@ -18,7 +18,7 @@ const middlewareLink = new ApolloLink((operation, forward) => {
   const token = sessionStorage.getItem('access_token')
   operation.setContext({
     headers: {
-      Authorization: `Bearer ${token}` || null
+      Authorization: token
     }
   })
   return forward(operation)

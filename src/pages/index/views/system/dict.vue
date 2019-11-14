@@ -90,6 +90,7 @@ export default {
       `, param).then(r => {
         this.data = r.dicts.data
         this.total = r.dicts.total
+        this.$bus.$emit('init-dict', this.data)
       })
     },
     dictRowClick (row) {
@@ -116,7 +117,6 @@ export default {
         }
       `).then(r => {
         this.dataItems = r.dict.values
-        this.$store.dispatch('common/initDict')
       })
     },
     dictItemEditConfirm (id, input) {

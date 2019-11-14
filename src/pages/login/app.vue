@@ -9,62 +9,76 @@
           { title :'密码',key:'password',type:'password',icon:'icon-key',labelHide:true},
         ]"
       />
-    
+
       <el-button type="primary" style="width:100%;" @click="submitForm()">登录</el-button>
     </div>
-    
+
   </div>
 </template>
 
 <script>
 export default {
-  name: "Login",
-  data() {
+  name: 'Login',
+  data () {
     return {
       form: {
-        account: "root",
-        password: "bwg7xj98b3"
+        account: 'root',
+        password: 'bwg7xj98b3'
       }
-    };
+    }
   },
-  
+
   methods: {
-    submitForm() {
+    getQueryString (name) {
+      var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
+      var reg_rewrite = new RegExp('(^|/)' + name + '/([^/]*)(/|$)', 'i')
+      var r = window.location.search.substr(1).match(reg)
+      var q = window.location.pathname.substr(1).match(reg_rewrite)
+      if (r != null) {
+        return unescape(r[2])
+      } else if (q != null) {
+        return unescape(q[2])
+      } else {
+        return null
+      }
+    },
+    submitForm () {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.$mutate(`
             mutation Login{
               login(account:"${this.form.account}",password:"${this.form.password}")
             }
-          `,null,"auth").then(r=>{
-            let redirect = ap.Query("redirect")
-            if (redirect && redirect.length > 0){
+          `, null, 'auth').then(r => {
+            let redirect = this.getQueryString('redirect')
+            if (redirect && redirect.length > 0) {
               location.href = redirect
-            }else{
-              location.href = "index.html";
+            } else {
+              location.href = 'index.html'
             }
-          }).catch(r=>{
-              this.$message.error('登录失败');
+          }).catch(r => {
+            console.log(r)
+            this.$message.error('登录失败')
           })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     }
   },
-  created() {
-    let self = this;
-    document.onkeypress = function(e) {
-      var keycode = document.all ? event.keyCode : e.which;
+  created () {
+    let self = this
+    document.onkeypress = function (e) {
+      var keycode = document.all ? event.keyCode : e.which
       if (keycode == 13) {
-        self.submitForm();
-        return false;
+        self.submitForm()
+        return false
       }
-    };
+    }
   },
-  mounted() {},
-  destroyed() {},
-};
+  mounted () {},
+  destroyed () {}
+}
 </script>
 
 <style lang="scss" scoped>

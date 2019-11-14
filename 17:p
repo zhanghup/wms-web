@@ -7,17 +7,10 @@ import '@/components/index.js'
 import {http} from '@/actions/action'
 import Fmt from '@/actions/format'
 
-let format = new Fmt()
+let format = new Fmt(store)
 
 Vue.prototype.$query = http.$query
 Vue.prototype.$mutate = http.$mutate
-Vue.prototype.$val = (key, value) => {
-  return format.GetValue(key, value)
-}
-Vue.prototype.$valf = (key, format, value) => {
-  return format.FormatValue(key, format, value)
-}
-
 Vue.config.productionTip = false
 Vue.use(Element, { size: 'small', zIndex: 3000 })
 

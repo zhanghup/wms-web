@@ -11,15 +11,17 @@ import '@/style/iconfount.less'
 import '@/components/index.js'
 import {http} from '@/actions/action'
 import Fmt from '@/actions/format'
-import bus from './eventBus.vue'
 
 let format = new Fmt(store)
-
-Vue.prototype.$bus = bus
+Vue.prototype.$bus = new Vue()
 Vue.prototype.$query = http.$query
 Vue.prototype.$mutate = http.$mutate
-Vue.prototype.$val = format.GetValue
-Vue.prototype.$valf = format.FormatValue
+Vue.prototype.$val = (key, value) => {
+  return format.GetValue(key, value)
+}
+Vue.prototype.$valf = (key, fmt, value) => {
+  return format.FormatValue(key, fmt, value)
+}
 
 Vue.config.productionTip = false
 Vue.use(Element, { size: 'small', zIndex: 3000 })
@@ -30,5 +32,11 @@ new Vue({
   store,
   router,
   components: {App},
-  template: '<App/>'
+  template: '<App/>',
+  created () {
+    this.$on('init-dict', dicts => {
+      this.$store.commit('common/SET_DICT', dicts)
+    })
+  }
+
 })
