@@ -23,7 +23,7 @@ export default {
   },
   methods:{
     loadData(param,fn){
-      ap.$query(`
+      this.$query(`
         query Roles($query:QRole!){
           roles(query:$query){
             total

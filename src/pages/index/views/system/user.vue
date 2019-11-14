@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     loadData (param, fn) {
-      ap.$query(`
+      this.$query(`
           query Users($query:QUser!){
             users(query:$query){
               total
@@ -82,7 +82,7 @@ export default {
       })
     },
     onConfirm (input) {
-      ap.$mutate(`
+      this.$mutate(`
         mutation UserCreate($input:NewUser!){
           user_create(input:$input){
             id
@@ -93,7 +93,7 @@ export default {
       })
     },
     userEdit(id,input){
-      ap.$mutate(`
+      this.$mutate(`
         mutation UserUpdate($input:UpdUser!){
           user_update(id:"${id}",input:$input)
         }
@@ -102,7 +102,7 @@ export default {
       })
     },
     userDelete (rows, fn) {
-      ap.$mutate(`
+      this.$mutate(`
         mutation UserRemoves($ids:[String!]){
           user_removes(ids:$ids)
         }

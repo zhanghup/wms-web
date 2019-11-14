@@ -117,7 +117,7 @@ export default {
   },
   methods: {
     GetValue ({$index, col, row}, column) {
-      return ap.FormatValue(column.key, column.format, row)
+      return this.$valf(column.key, column.format, row)
     },
     Refresh () {
       this.addedData = []

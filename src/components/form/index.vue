@@ -157,7 +157,7 @@ export default {
             val = o.default
           }
         }
-        let v2 = ap.GetValue(o.key, this.form)
+        let v2 = this.$val(o.key, this.form)
         if (v2 != undefined) {
           val = v2
         }

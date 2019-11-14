@@ -115,7 +115,7 @@ export default {
             let obj = {}
             for(let o of this.fields){
                 let key = o.alias || o.key
-                obj[o.key] = ap.GetValue(key,this.form)
+                obj[o.key] = this.$val(key,this.form)
             }
             this.formObj = obj
         }

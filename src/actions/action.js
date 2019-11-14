@@ -30,7 +30,6 @@ const networkError = onError(r => {
       message: `网络连接异常${r.networkError}`,
       type: 'error'
     })
-    console.log(r)
   }
 })
 
@@ -59,6 +58,16 @@ const apollo = new VueApollo({
   }
 })
 
+function ResponseError ({networkError}) {
+  if (networkError) {
+    switch (networkError.statusCode) {
+      case 401:location.href = '/login.html'; return
+    }
+  }
+
+  return true
+}
+
 const $query = (query, variables, ty = 'base') => {
   return new Promise((resolve, reject) => {
     apollo.clients[ty].query({
@@ -70,7 +79,9 @@ const $query = (query, variables, ty = 'base') => {
     }).then(r => {
       resolve(r.data)
     }).catch(r => {
-      reject(r)
+      if (!ResponseError(r)) {
+        reject(r)
+      }
     })
   })
 }
@@ -83,8 +94,9 @@ const $mutate = (query, variables, ty = 'base') => {
     }).then(r => {
       resolve(r.data)
     }).catch(r => {
-      console.error(r)
-      reject(r)
+      if (!ResponseError(r)) {
+        reject(r)
+      }
     })
   })
 }

@@ -113,7 +113,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "../../../../../assets/variables.scss";
+@import "../../../../../style/variables.scss";
 .wrap{
   background-color: $bgc;
   display: flex;

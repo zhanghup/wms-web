@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     loadData (param, fn) {
-      ap.$query(`
+      this.$query(`
         query Dicts($query:QDict!){
           dicts(query:$query){
             total
@@ -98,7 +98,7 @@ export default {
     },
     dictRefresh () {
       if (!this.currentDict) return
-      ap.$query(`
+      this.$query(`
         query Dicts{
           dict(id:"${this.currentDict.id}"){
               values{
@@ -120,7 +120,7 @@ export default {
       })
     },
     dictItemEditConfirm (id, input) {
-      ap.$mutate(`
+      this.$mutate(`
         mutation DictItemEdit($input:UpdDictItem!){
           dict_item_update(id:"${id}",input:$input)
         }
@@ -129,7 +129,7 @@ export default {
       })
     },
     onConfirmDictItem (input) {
-      ap.$mutate(`
+      this.$mutate(`
         mutation DictItemCreate($input:NewDictItem!){
           dict_item_create(input:$input){
             id
@@ -152,7 +152,7 @@ export default {
       }
     },
     dictItemDelete (rows, fn) {
-      ap.$mutate(`
+      this.$mutate(`
         mutation DictItemRemoves($ids:[String!]){
           dict_item_removes(ids:$ids)
         }

@@ -22,8 +22,8 @@ export default {
   data() {
     return {
       form: {
-        account: "5d6aa87c1fa8d53ae054e32d",
-        password: "Aa123456"
+        account: "root",
+        password: "bwg7xj98b3"
       }
     };
   },
@@ -32,7 +32,7 @@ export default {
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          ap.$mutate(`
+          this.$mutate(`
             mutation Login{
               login(account:"${this.form.account}",password:"${this.form.password}")
             }
