@@ -1,7 +1,6 @@
 export const menus = [
   {
     path: '/home',
-    key: 'home',
     name: '主页',
     component: () => import('@/pages/index/views/home/index'),
     hidden: true
@@ -13,9 +12,9 @@ export const menus = [
     component: () => import('@/pages/index/views/index'),
     hidden: true,
     children: [
-      {path: 'dict', key: 'sys-dict', name: '数据字典', component: () => import('@/pages/index/views/system/dict')},
-      {path: 'user', key: 'sys-path', name: '用户管理', component: () => import('@/pages/index/views/system/user')},
-      {path: 'role', key: 'sys-role', name: '角色管理', component: () => import('@/pages/index/views/system/role')},
+      {path: 'dict', name: '数据字典', component: () => import('@/pages/index/views/system/dict')},
+      {path: 'user', name: '用户管理', component: () => import('@/pages/index/views/system/user')},
+      {path: 'role', name: '角色管理', component: () => import('@/pages/index/views/system/role')},
     ]
   }
 ]

@@ -13,7 +13,10 @@
       @on-delete="onDelete"
     >
       <z-form  width="480px" :fields="formRole" @on-confirm="onConfirmRole"  slot="btns-left"></z-form>
-      <div slot="action"><i class="iconfont iconshujuduixiang"></i></div>
+      <div slot="action">
+        <i class="iconfont iconcaidan" />
+        <i class="iconfont iconshujuduixiang" />
+      </div>
     </z-table>
 </template>
 <script>

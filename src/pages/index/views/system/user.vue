@@ -28,14 +28,14 @@ export default {
     var self = this
     return {
       columns: [
-        { title: '用户类型', width: 80, key: 'type', format: 'dict:D0001' },
+        { title: '用户类型', width: 100, key: 'type', format: 'dict:SYS0001' },
         { title: '名称', width: 120, key: 'name' },
         { title: '账户', width: 120, key: 'account' },
         { title: '手机号', width: 120, key: 'mobile' },
         { title: '排序', key: 'weight' }
       ],
       formUser: [
-        {type: 'dict:D0001', title: '用户类型', key: 'type', span: 12},
+        {type: 'dict:SYS0001', title: '用户类型', key: 'type', span: 12},
         {type: 'input:text', title: '姓名', key: 'name', span: 12},
         {type: 'input:text', title: '用户名', key: 'account', span: 12},
         {type: 'input:password', title: '密码', key: 'password', span: 12},
