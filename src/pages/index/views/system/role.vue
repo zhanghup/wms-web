@@ -8,21 +8,30 @@
       :loadData="loadData"
       :total="total"
       :data="data"
+      :editFields="formRole"
+      @on-edit-confirm="onEdit"
+      @on-delete="onDelete"
     >
-      <div slot="action"><i class="iconfount iconshujuduixiang"></i></div>
+      <z-form  width="480px" :fields="formRole" @on-confirm="onConfirmRole"  slot="btns-left"></z-form>
+      <div slot="action"><i class="iconfont iconshujuduixiang"></i></div>
     </z-table>
 </template>
 <script>
 export default {
-  name:"system-role",
-  data(){
+  name: 'system-role',
+  data () {
     return {
-      total:0,
-      data:[]
+      formRole: [
+        {title: '角色名称', key: 'name', type: 'input', span: 24, role: true},
+        {title: '描述', key: 'desc', type: 'input', span: 24, role: true}
+      ],
+
+      total: 0,
+      data: []
     }
   },
-  methods:{
-    loadData(param,fn){
+  methods: {
+    loadData (param, fn) {
       this.$query(`
         query Roles($query:QRole!){
           roles(query:$query){
@@ -38,9 +47,38 @@ export default {
             }
           }
         }
-      `,param).then(r=>{
+      `, param).then(r => {
         this.total = r.roles.total
         this.data = r.roles.data
+      })
+    },
+    onConfirmRole (input) {
+      this.$mutate(`
+        mutation RoleCreate($input:NewRole!){
+          role_create(input:$input){id}
+        }
+      `, {input}).then(r => {
+        this.$refs.table.LoadData()
+      })
+    },
+    onEdit (id, input) {
+      this.$mutate(`
+        mutation Edit($input:UpdRole!){
+          role_update(id:"${id}",input:$input)
+        }
+      `, {input}).then(r => {
+        this.$refs.table.LoadData()
+      })
+    },
+    onDelete (rows) {
+      this.$mutate(`
+        mutation Delete($ids:[String!]){
+          role_removes(ids:$ids)
+        }
+      `, {
+        ids: rows.map(r => r.id)
+      }).then(r => {
+        this.$refs.table.LoadData()
       })
     }
   }
