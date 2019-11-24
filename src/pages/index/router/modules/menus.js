@@ -1,20 +1,22 @@
 export const menus = [
   {
+    id: '0',
     path: '/home',
     name: '主页',
     component: () => import('@/pages/index/views/home/index'),
     hidden: true
   },
   {
+    id: '1',
     path: '/system',
     redirect: '/system/auth',
     name: '系统设置',
     component: () => import('@/pages/index/views/index'),
     hidden: true,
     children: [
-      {path: 'dict', name: '数据字典', component: () => import('@/pages/index/views/system/dict')},
-      {path: 'user', name: '用户管理', component: () => import('@/pages/index/views/system/user')},
-      {path: 'role', name: '角色管理', component: () => import('@/pages/index/views/system/role')},
+      {id: '1-0', path: 'dict', name: '数据字典', component: () => import('@/pages/index/views/system/dict')},
+      {id: '1-1', path: 'user', name: '用户管理', component: () => import('@/pages/index/views/system/user')},
+      {id: '1-2', path: 'role', name: '角色管理', component: () => import('@/pages/index/views/system/role')}
     ]
   }
 ]
