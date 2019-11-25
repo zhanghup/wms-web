@@ -2,8 +2,7 @@
   <div class="dicts">
         <z-table class="item" ref="table" :columns=" [
           { title: '字典编码', key: 'code' },
-          { title: '名称', key: 'name' },
-          { title: '排序', key: 'weight'}
+          { title: '名称', key: 'name' }
         ]"
         :loadData="loadData"
         :showOperate="false"
@@ -52,7 +51,6 @@ export default {
         {type: 'input:text', title: '字典值', key: 'value', span: 24},
         {type: 'input:text', title: '扩展', key: 'extension', span: 24},
         {type: 'switch', title: '状态', key: 'status', span: 24, default: 1},
-        {type: 'input:number', title: '排序', key: 'weight', span: 24, default: 1}
       ],
       currentDict: null
 
@@ -81,7 +79,6 @@ export default {
                 extension
                 created
                 updated
-                weight
                 status
               }
             }

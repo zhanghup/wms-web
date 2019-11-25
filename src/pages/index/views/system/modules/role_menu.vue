@@ -30,7 +30,7 @@
         </div>
       </div>
       <div class="bottom">
-        <el-button type="primary" style="width:100%;border-radius:0px;position:absolute;bottom:0px;padding:10px 0;font-size:16px;">确&nbsp;&nbsp;&nbsp;&nbsp;定</el-button>
+        <el-button :loading="loading" type="primary" @click="onOk" style="width:100%;border-radius:0px;position:absolute;bottom:0px;padding:10px 0;font-size:16px;">确&nbsp;&nbsp;&nbsp;&nbsp;定</el-button>
       </div>
     </el-drawer>
   </div>
@@ -39,17 +39,33 @@
 import Menus from "../../../router/index";
 export default {
   name: "system-modules-role-menu",
+  props:{
+    role:{required:true,type:String}
+  },
   data() {
     return {
       open: false,
       menus: [],
       selectMenus: [],
-      perms: []
+      perms: [],
+      loading:false,
     };
   },
   methods: {
     onOpen() {
+      this.loadData()
       this.open = true;
+    },
+    loadData(){
+      this.$query(`
+        query Perms{
+          role_perms(id:"${this.role}",type:"menu")
+        }
+      `).then(r=>{
+        this.perms = r.role_perms
+        this.initMenu();
+        this.initSelectMenu();
+      })
     },
     formatPerms() {
       let a = {};
@@ -128,11 +144,25 @@ export default {
       }
 
       this.selectMenus = format(routes);
+    },
+    onOk(){
+      this.loading = true
+      this.$mutate(`
+        mutation Ok( $perms: [String!]!){
+          role_perm_create(id:"${this.role}",type:"menu",perms:$perms)
+        }
+      `,{
+        perms:this.perms
+      }).then(r=>{
+        this.$emit("on-ok")
+        this.open = false
+        this.loading = false
+      }).catch(r=>{
+        this.loading = false
+      })
     }
   },
   created() {
-    this.initMenu();
-    this.initSelectMenu();
   }
 };
 </script>

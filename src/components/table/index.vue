@@ -1,10 +1,10 @@
 <template>
   <div class="wrap">
     <div  class="filter">
-      <div class="ff" v-if="showFilter">
+      <div class="ff" v-if="showFilter && !showSimple">
         <z-filter :filters="filters"/>
       </div>
-      <div class="btns">
+      <div class="btns" v-if="showBottonTools && !showSimple">
           <slot name="btns-left"></slot>
           <el-dropdown v-if="showExport" size="small" @command="Export">
             <el-tooltip class="item" effect="dark" content="导出Excel" placement="top">
@@ -34,13 +34,13 @@
         :highlight-current-row="true"
         @row-click="row => $emit('row-click',row)"
         style="width: 100%">
-      <el-table-column type="index" width="50"/>
-      <el-table-column v-for="item in Columns" :key="item.key" :label="item.title" :width="item.width||''" >
+      <el-table-column v-if="showColumnIndex && !showSimple" type="index" width="50"/>
+      <el-table-column v-for="item in Columns" :key="item.key" :label="item.title" :width="item.width||''" :align="item.align" >
         <template slot-scope="scope">
           <div>{{ GetValue(scope,item)}}</div>
         </template>
       </el-table-column>
-      <el-table-column v-if="showOperate" label="操作" width="120" align="center" fixed="right">
+      <el-table-column v-if="showOperate && !showSimple" label="操作" width="120" align="center" fixed="right">
         <template slot-scope="scope">
           <slot name="column-edit"></slot>
           <z-form v-if="showEdit" slot="btns-left" :type="'edit'" :form="editForm" :fields="editFields" @on-confirm="editConfirm" :beforeOpen="onEdit(scope.row)" width="480px">
@@ -49,8 +49,10 @@
           <i v-if="showDelete" class="el-icon-delete" style="cursor:pointer;color:red;" @click="onDelete([scope.row])"></i>
         </template>
       </el-table-column>
-      <el-table-column v-for="item in ColumnActions" :key="item.key" :fixed="item.fixed" :align="item.align" :label="item.title" :width="item.width||'120px'">
-        <slot :name="item.key">fff</slot>
+      <el-table-column  v-for="item in ColumnActions" :key="item.key" :fixed="item.fixed" :align="item.align" :label="item.title" :width="item.width||'120px'">
+        <template slot-scope="scope">
+          <slot :name="item.key" :row="scope.row"></slot>
+        </template>
       </el-table-column>
     </el-table>
     <el-pagination v-if="isPage"
@@ -73,6 +75,7 @@ export default {
   components: { zFilter, zForm },
   props: {
     showFilter: {type: Boolean, default: true},
+    showBottonTools: {type: Boolean, default: true},
     showExport: {type: Boolean, default: true},
     showColumnSet: {type: Boolean, default: true},
     showRefresh: {type: Boolean, default: true},
@@ -80,6 +83,8 @@ export default {
     showOperate: {type: Boolean, default: true},
     showEdit: {type: Boolean, default: true},
     showDelete: {type: Boolean, default: true},
+    showColumnIndex: {type: Boolean, default: true},
+    showSimple: {type: Boolean, default: false}, // 简单构建模式
 
     loadData: { type: Function, required: true },
     data: Array,

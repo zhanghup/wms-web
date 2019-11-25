@@ -11,17 +11,18 @@
       }
     ]" :loadData="loadData" :total="total" :data="data" :editFields="formRole" @on-edit-confirm="onEdit" @on-delete="onDelete">
     <z-form width="480px" :fields="formRole" @on-confirm="onConfirmRole" slot="btns-left"></z-form>
-    <div slot="action">
-      <role-menu />
-      <i class="iconfont iconshujuduixiang" />
+    <div slot="action" slot-scope="{row}" >
+      <role-menu :role="row.id"/>
+      <role-object :role="row.id" />
     </div>
   </z-table>
 </template>
 <script>
 import RoleMenu from "./modules/role_menu";
+import RoleObject from "./modules/role_object"
 export default {
   name: "system-role",
-  components: { RoleMenu },
+  components: { RoleMenu ,RoleObject},
   data() {
     return {
       formRole: [
