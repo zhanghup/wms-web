@@ -4,7 +4,7 @@
         <el-drawer title="对象权限" :visible.sync="open" direction="rtl" size="560px">
             <z-table ref="table" :columns="columns" :loadData="loadData" :isPage="false" :showSimple="true" :data="data" />
             <div class="bottom">
-                <el-button :loading="loading" type="primary" @click="onOk" style="width:100%;border-radius:0px;position:absolute;bottom:0px;padding:10px 0;font-size:16px;">确&nbsp;&nbsp;&nbsp;&nbsp;定</el-button>
+                <el-button :loading="loading" type="primary" @click="onOk" class="btn-confirm">确&nbsp;&nbsp;&nbsp;&nbsp;定</el-button>
             </div>
         </el-drawer>
     </div>
@@ -38,9 +38,13 @@ export default {
                 this.columns.push({
                     title:o.name,
                     key:o.value,
-                    align:'center'
+                    align:'center',
+                    render(h,{row}){
+                        return h("div",row.C)
+                    }
                 })
             }
+
             for (let o of this.dictmap["SYS0003"].values){
                 let obj = { }
                 for (let oo of this.columns){
@@ -58,3 +62,13 @@ export default {
     }
 }
 </script>
+<style lang="less" scoped>
+.btn-confirm{
+    width:100%;
+    border-radius:0px;
+    position:absolute;
+    bottom:0px;
+    padding:10px 0;
+    font-size:16px;
+}
+</style>

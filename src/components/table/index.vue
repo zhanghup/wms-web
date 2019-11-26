@@ -34,12 +34,9 @@
         :highlight-current-row="true"
         @row-click="row => $emit('row-click',row)"
         style="width: 100%">
-      <el-table-column v-if="showColumnIndex && !showSimple" type="index" width="50"/>
-      <el-table-column v-for="item in Columns" :key="item.key" :label="item.title" :width="item.width||''" :align="item.align" >
-        <template slot-scope="scope">
-          <div>{{ GetValue(scope,item)}}</div>
-        </template>
-      </el-table-column>
+
+      <column  v-for="item in Columns" :key="item.key"  :col="item" />
+      
       <el-table-column v-if="showOperate && !showSimple" label="操作" width="120" align="center" fixed="right">
         <template slot-scope="scope">
           <slot name="column-edit"></slot>
@@ -70,9 +67,10 @@ import {mapState} from 'Vuex'
 import zFilter from './modules/filters'
 import zForm from '../form'
 import excel from '../../actions/excel.js'
+import column from './modules/column/column'
 export default {
   name: 'z-table',
-  components: { zFilter, zForm },
+  components: { zFilter, zForm,column },
   props: {
     showFilter: {type: Boolean, default: true},
     showBottonTools: {type: Boolean, default: true},
