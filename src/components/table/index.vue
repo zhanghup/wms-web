@@ -35,7 +35,7 @@
         @row-click="row => $emit('row-click',row)"
         style="width: 100%">
 
-      <column  v-for="item in Columns" :key="item.key"  :col="item" />
+      <column  v-for="item in Columns" :key="item.key"  :col="item" @change="dataChange"/>
       
       <el-table-column v-if="showOperate && !showSimple" label="操作" width="120" align="center" fixed="right">
         <template slot-scope="scope">
@@ -98,14 +98,15 @@ export default {
   },
   data () {
     return {
+      // 本地做一个数据缓存
+      datalist:[],
+
       // 系统配置
       tableHeight: 0,
       timer: {},
 
       // 数据配置
       editForm: {},
-      addedData: [],
-      datas: [],
       tablePage: {index: 1, size: 50, count: true},
       tableQuery: {}
     }
@@ -118,12 +119,15 @@ export default {
       return this.columns.filter(r=>r.type == 'custom')
     }
   },
+
   methods: {
+    dataChange(a,b,c){
+      console.log(a,b,c)
+    },
     GetValue ({$index, col, row}, column) {
       return this.$valf(column.key, column.format, row)
     },
     Refresh () {
-      this.addedData = []
       this.LoadData()
     },
     Export (type) {
@@ -157,7 +161,10 @@ export default {
       } else {
         param = { ...this.tableQuery }
       }
-      this.loadData(param)
+      this.loadData(param,this.loadDataSuccess)
+    },
+    loadDataSuccess(){
+
     },
     onEdit (row) {
       return _ => {

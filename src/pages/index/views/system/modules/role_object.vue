@@ -39,23 +39,22 @@ export default {
                     title:o.name,
                     key:o.value,
                     align:'center',
-                    render(h,{row}){
-                        return h("div",row.C)
-                    }
+                    type:'checkbox',
                 })
             }
 
             for (let o of this.dictmap["SYS0003"].values){
                 let obj = { }
                 for (let oo of this.columns){
-                    obj[oo.key] = false
+                    obj[oo.key] = true
                 }
                 obj.name = o.name
+                obj.id = o.id
                 this.data.push(obj)
             }
         },
         onOk(){
-            
+            console.log(this.data)
         }
     },
     created(){

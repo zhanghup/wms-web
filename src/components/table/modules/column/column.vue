@@ -3,6 +3,7 @@
         <template slot-scope="{$index,column,row}">
             <slot  :$index="$index" :column="column" :row="row" >
                 <div v-if="type === 'default'">{{ GetValue(row)}}</div>
+                <el-checkbox v-if="type === 'checkbox'" :value="row[col.key]" @change="v => NewValue(col,row,v)" />
                 <render v-if="type === 'render'" :render="col.render" :col="col" :row="row" :level="1"/>
             </slot>
         </template>
@@ -18,10 +19,15 @@ export default {
     },
     data(){
         return {
-            type:null
+            type:null,
+
         }
     },
     methods:{
+        NewValue(col,row,v){
+            row[col.key] = v
+            this.$emit("change",col,row,v)
+        },
         GetValue (row) {
             return this.$valf(this.col.key, this.col.format, row)
         },
