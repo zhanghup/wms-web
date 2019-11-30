@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import components from '../../packages'
 
 const requireComponent = require.context(
   // 其组件目录的相对路径
@@ -20,4 +21,8 @@ requireComponent.keys().forEach(fileName => {
     // 否则回退到使用模块的根。
     componentConfig.default || componentConfig
   )
+})
+
+components.forEach(component => {
+  Vue.component(component.name, component)
 })

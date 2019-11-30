@@ -122,7 +122,8 @@ function formatData (data) {
     return c
   }
 
-  let r = 0, max = 0
+  let r = 0
+  let max = 0
   for (let row of data) {
     let c = rowFormat(row, r)
     if (c > max) {
@@ -132,9 +133,9 @@ function formatData (data) {
   }
 
   return {
-    ...result,
-    '!ref': XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r, c: max } }),
-    '!merges': merges
+    // ...result,
+    // '!ref': XLSX.utils.encode_range({ s: { r: 0, c: 0 }, e: { r, c: max } }),
+    // '!merges': merges
 
   }
 }
