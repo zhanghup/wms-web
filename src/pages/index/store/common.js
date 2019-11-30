@@ -1,4 +1,4 @@
-import {http} from '@/actions/action'
+import {api} from '../../../apollo'
 
 var common = {
   namespaced: true,
@@ -8,7 +8,7 @@ var common = {
   },
   actions: {
     load ({commit}) {
-      http.$query(`
+      api.$query(`
         query S{
            dicts(query:{
               index:1
@@ -45,7 +45,7 @@ var common = {
       })
     },
     loadDict ({commit}) {
-      http.$query(`
+      api.$query(`
         query S{
            dicts(query:{
               index:1

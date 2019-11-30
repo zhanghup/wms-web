@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     loadData(param, fn) {
-      this.$query(
+      this.$api.$query(
         `
         query Roles($query:QRole!){
           roles(query:$query){
@@ -60,7 +60,7 @@ export default {
       });
     },
     onConfirmRole(input) {
-      this.$mutate(
+      this.$api.$mutate(
         `
         mutation RoleCreate($input:NewRole!){
           role_create(input:$input){id}
@@ -72,7 +72,7 @@ export default {
       });
     },
     onEdit(id, input) {
-      this.$mutate(
+      this.$api.$mutate(
         `
         mutation Edit($input:UpdRole!){
           role_update(id:"${id}",input:$input)
@@ -84,7 +84,7 @@ export default {
       });
     },
     onDelete(rows) {
-      this.$mutate(
+      this.$api.$mutate(
         `
         mutation Delete($ids:[String!]){
           role_removes(ids:$ids)

@@ -2,15 +2,14 @@ import Vue from 'vue'
 import App from './App'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import '@/style/style.scss'
-import '@/components/index.js'
-import {http} from '@/actions/action'
-import Fmt from '@/actions/format'
+import '../../style/style.scss'
+import '../../components/index.js'
+import {auth} from '../../apollo'
+import Fmt from '../../actions/format'
 
 let format = new Fmt()
 
-Vue.prototype.$query = http.$query
-Vue.prototype.$mutate = http.$mutate
+Vue.prototype.$auth = auth
 Vue.prototype.$val = (key, value) => {
   return format.GetValue(key, value)
 }

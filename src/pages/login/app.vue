@@ -45,7 +45,7 @@ export default {
     submitForm () {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$mutate(`
+          this.$auth.$mutate(`
             mutation Login{
               login(account:"${this.form.account}",password:"${this.form.password}")
             }
@@ -57,7 +57,6 @@ export default {
               location.href = 'index.html'
             }
           }).catch(r => {
-            console.log(r)
             this.$message.error('登录失败')
           })
         } else {

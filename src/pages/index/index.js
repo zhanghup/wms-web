@@ -6,16 +6,18 @@ import App from './App'
 import router from './router'
 import Element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import '@/style/iconfount.less'
-import '@/style/style.scss'
-import '@/components/index.js'
-import {http} from '@/actions/action'
-import Fmt from '@/actions/format'
+import '../../style/iconfount.less'
+import '../../style/style.scss'
+import '../../components/index.js'
+import {auth,api} from '../../apollo'
+import Fmt from '../../actions/format'
 
 let format = new Fmt(store)
 Vue.prototype.$bus = new Vue()
-Vue.prototype.$query = http.$query
-Vue.prototype.$mutate = http.$mutate
+Vue.prototype.$auth = auth
+Vue.prototype.$api = api
+Vue.prototype.$query = api.$query
+Vue.prototype.$mutate = api.$mutate
 Vue.prototype.$val = (key, value) => {
   return format.GetValue(key, value)
 }

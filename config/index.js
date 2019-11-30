@@ -9,7 +9,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/base': {
+      '/api': {
         target: 'http://127.0.0.1:8899/',
         pathRewrite: {},
         changeOrigin: true,     // target是域名的话，需要这个参数，

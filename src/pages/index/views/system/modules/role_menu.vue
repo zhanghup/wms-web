@@ -57,7 +57,7 @@ export default {
       this.open = true;
     },
     loadData(){
-      this.$query(`
+      this.$api.$query(`
         query Perms{
           role_perms(id:"${this.role}",type:"menu")
         }
@@ -147,7 +147,7 @@ export default {
     },
     onOk(){
       this.loading = true
-      this.$mutate(`
+      this.$api.$mutate(`
         mutation Ok( $perms: [String!]!){
           role_perm_create(id:"${this.role}",type:"menu",perms:$perms)
         }

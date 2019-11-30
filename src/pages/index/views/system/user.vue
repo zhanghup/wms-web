@@ -28,7 +28,7 @@ export default {
     var self = this
     return {
       columns: [
-        { title: '用户类型', width: 100, key: 'type', format: 'dict:SYS0001' },
+        { title: '用户类型', width: 140, key: 'type', format: 'dict:SYS0001' },
         { title: '名称', width: 120, key: 'name' },
         { title: '账户', width: 120, key: 'account' },
         { title: '手机号', width: 120, key: 'mobile' },
@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     loadData (param, fn) {
-      this.$query(`
+      this.$api.$query(`
           query Users($query:QUser!){
             users(query:$query){
               total
@@ -82,7 +82,7 @@ export default {
       })
     },
     onConfirm (input) {
-      this.$mutate(`
+      this.$api.$mutate(`
         mutation UserCreate($input:NewUser!){
           user_create(input:$input){
             id
@@ -93,7 +93,7 @@ export default {
       })
     },
     userEdit(id,input){
-      this.$mutate(`
+      this.$api.$mutate(`
         mutation UserUpdate($input:UpdUser!){
           user_update(id:"${id}",input:$input)
         }
@@ -102,7 +102,7 @@ export default {
       })
     },
     userDelete (rows, fn) {
-      this.$mutate(`
+      this.$api.$mutate(`
         mutation UserRemoves($ids:[String!]){
           user_removes(ids:$ids)
         }

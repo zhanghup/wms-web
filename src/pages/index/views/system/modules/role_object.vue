@@ -32,7 +32,62 @@ export default {
       this.open = true;
     },
     loadData() {
-      this.data = [];
+      this.$query(`
+        query Perms{
+          role_perm_objects(id:"${this.role}"){
+            object
+            mask
+          }
+        }
+      `).then(r=>{
+        let omap = {}
+        for (let o of r.role_perm_objects){
+          omap[o.object] = o
+        }
+
+        for (let o of this.dictmap["SYS0003"].values) {
+          let obj = {
+            ins:omap[o.value] ? omap[o.value].mask:""
+          };
+
+          for (let oo of this.columns) {
+            obj[oo.key] = obj.ins.indexOf(oo.key) > -1?true:false
+          }
+          obj.name = o.name;
+          obj.type = o.value
+          obj.id = o.id;
+          this.data.push(obj);
+        }
+      })
+    },
+    onOk() {
+      this.loading = true
+      let result = this.$refs.table.LoadChange()
+      let data = []
+      for (let o of result){
+          let obj = {object:o.type,mask:""}
+          for (let oo of this.dictmap["SYS0002"].values) {
+            if (o[oo.value]){
+              obj.mask += oo.value
+            }
+          }
+          data.push(obj)
+      }
+      this.$mutate(`
+        mutation RoleObjectCommit($id: String!, $perms:[IPermObj!]!){
+          role_perm_obj_create(id:$id,perms:$perms)
+        }
+      `,{
+        id:this.role,
+        perms:data
+      },_ =>{
+        this.loading = false
+        this.open = false
+      })
+    }
+  },
+  created() {
+    this.data = [];
       this.columns = [{ title: "名称", key: "name" }];
       for (let o of this.dictmap["SYS0002"].values) {
         this.columns.push({
@@ -42,20 +97,7 @@ export default {
           type: "checkbox"
         });
       }
-
-      for (let o of this.dictmap["SYS0003"].values) {
-        let obj = {};
-        for (let oo of this.columns) {
-          obj[oo.key] = true;
-        }
-        obj.name = o.name;
-        obj.id = o.id;
-        this.data.push(obj);
-      }
-    },
-    onOk() {}
-  },
-  created() {}
+  }
 };
 </script>
 <style lang="less" scoped>
