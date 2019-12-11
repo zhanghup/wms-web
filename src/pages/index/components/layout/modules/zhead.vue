@@ -16,7 +16,7 @@
     </div>
     <div class="tools">
       <el-button size="mini" icon="el-icon-full-screen" circle @click="screenFull"></el-button>
-      <el-button size="mini" icon="el-icon-search" circle></el-button>
+      <el-button size="mini" icon="el-icon-crop" @click="$emit('hide')" circle></el-button>
       <el-button size="mini" icon="el-icon-search" circle></el-button>
     </div>
   </div>
@@ -26,9 +26,9 @@
 import screenfull from 'screenfull'
 
 export default {
-  name: "zhead",
-  methods:{
-    screenFull(){
+  name: 'zhead',
+  methods: {
+    screenFull () {
       if (!screenfull.enabled) {
         this.$message({
           message: '浏览器不支持全屏',
@@ -39,7 +39,7 @@ export default {
       screenfull.toggle()
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .head{
@@ -61,5 +61,3 @@ export default {
 }
 
 </style>
-
-
