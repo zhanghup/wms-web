@@ -19,7 +19,6 @@
         :columns=" [
           { title: '名称', key: 'name' },
           { title: '值', key: 'value' },
-          { title: '扩展', key: 'extension'}
         ]"
         :isPage="false"
         :total="totalItems"

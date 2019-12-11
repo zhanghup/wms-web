@@ -3,22 +3,37 @@ export const menus = [
     id: '0',
     path: '/home',
     name: '主页',
-    component: () => import('@/pages/index/views/home/index'),
-    hidden: true
   },
   {
     id: '1',
-    path: '/system',
+    path:"/system",
     redirect: '/system/auth',
-    name: '系统设置',
     component: () => import('@/pages/index/views/index'),
-    hidden: true,
+    name: '系统设置',
     children: [
       {id: '1-0', path: 'dict', name: '数据字典', component: () => import('@/pages/index/views/system/dict')},
       {id: '1-1', path: 'user', name: '用户管理', component: () => import('@/pages/index/views/system/user')},
       {id: '1-2', path: 'role', name: '角色管理', component: () => import('@/pages/index/views/system/role')}
     ]
-  }
+  },
+  {
+    id: '2',
+    path: '/monitor',
+    name: '服务监控',
+    component: () => import('@/pages/index/views/index'),
+    children: [
+      {id: '2-0', path: 'gin/stat', name: '接口健康', component: () => import('@/pages/index/views/monitor/gin-stat')},
+    ]
+  },
+  {
+    id: '3',
+    path: '/mp',
+    name: '微信公众号',
+    component: () => import('@/pages/index/views/index'),
+    children: [
+      {id: '3-0', path: 'gin/stat', name: '接口健康', component: () => import('@/pages/index/views/monitor/gin-stat')},
+    ]
+  },
 ]
 
 let unmenus = []
@@ -33,5 +48,6 @@ function unwind (m) {
   }
   return unmenus
 }
+console.log(unwind(menus))
 
 export const ms = unwind(menus)

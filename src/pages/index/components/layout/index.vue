@@ -54,8 +54,7 @@ export default {
     background-color: #f0f0f0;
     flex-grow:1;
     overflow-y:auto;
-    height:calc(100% - 10px);
-    padding:5px;
+    height:100%;
   }
 }
 

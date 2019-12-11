@@ -12,10 +12,9 @@ const router = new Router({
     {
       path: '/',
       component: () => import('@/pages/index/views/index'),
-      hidden: true
     },
     ...menus,
-    { path: '*', redirect: '/', hidden: true }
+    { path: '*', redirect: '/'}
   ]
 })
 
