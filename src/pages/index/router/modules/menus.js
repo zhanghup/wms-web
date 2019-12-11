@@ -2,11 +2,31 @@ export const menus = [
   {
     id: '0',
     path: '/home',
-    name: '主页',
+    name: '主页'
+  },
+  {
+    id: '3',
+    path: '/wxmp',
+    redirect: '/wxmp/menu',
+    name: '微信公众号',
+    component: () => import('@/pages/index/views/index'),
+    children: [
+      {id: '3-0', path: 'menu', name: '自定义菜单', component: () => import('@/pages/index/views/wxmp/menu')}
+    ]
+  },
+  {
+    id: '4',
+    path: '/form',
+    redirect: '/form/state',
+    name: '表单流程',
+    component: () => import('@/pages/index/views/index'),
+    children: [
+      {id: '4-0', path: 'menu', name: '表单名称', component: () => import('@/pages/index/views/form/forms')}
+    ]
   },
   {
     id: '1',
-    path:"/system",
+    path: '/system',
     redirect: '/system/auth',
     component: () => import('@/pages/index/views/index'),
     name: '系统设置',
@@ -22,18 +42,10 @@ export const menus = [
     name: '服务监控',
     component: () => import('@/pages/index/views/index'),
     children: [
-      {id: '2-0', path: 'gin/stat', name: '接口健康', component: () => import('@/pages/index/views/monitor/gin-stat')},
+      {id: '2-0', path: 'gin/stat', name: '接口健康', component: () => import('@/pages/index/views/monitor/gin-stat')}
     ]
-  },
-  {
-    id: '3',
-    path: '/mp',
-    name: '微信公众号',
-    component: () => import('@/pages/index/views/index'),
-    children: [
-      {id: '3-0', path: 'gin/stat', name: '接口健康', component: () => import('@/pages/index/views/monitor/gin-stat')},
-    ]
-  },
+  }
+
 ]
 
 let unmenus = []
