@@ -41,6 +41,7 @@ export const menus = [
     path: '/monitor',
     name: '服务监控',
     component: () => import('@/pages/index/views/index'),
+    props: {padding: '0'},
     children: [
       {id: '2-0', path: 'gin/stat', name: '接口健康', component: () => import('@/pages/index/views/monitor/gin-stat')}
     ]
